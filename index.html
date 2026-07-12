@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Social Media Dashboard · Analytics</title>
 
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
+        /* ─── all CSS (same as before) ─── */
         *,
         *::before,
         *::after {
@@ -517,7 +515,7 @@
                 stepforward: 'Step Forward KE',
                 topposts: 'Top Posts'
             },
-            refreshInterval: 60000, // 60 seconds
+            refreshInterval: 60000   // <-- removed trailing comma here
         };
 
         // ─── STATE ──────────────────────────────────────────────
