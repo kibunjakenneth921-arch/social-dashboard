@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ─── Minimal styles (same as before) ─── */
+        /* ─── Minimal styles ─── */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: #F8FAFC; padding: 20px; }
         .app { max-width: 1440px; margin: 0 auto; }
@@ -41,7 +41,6 @@
         .loader-wrap { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; gap: 16px; }
         .loader { width: 44px; height: 44px; border: 4px solid #E2E8F0; border-top: 4px solid #7C3AED; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .error-banner { background: #FEF2F2; color: #991B1B; padding: 14px 24px; border-radius: 10px; border-left: 4px solid #DC2626; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; font-weight: 500; }
         footer { text-align: center; padding: 20px 0 10px; font-size: 0.75rem; color: #94A3B8; border-top: 1px solid #E2E8F0; }
         @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
         .dark { --bg: #0F172A; --surface: #1E293B; --text: #F1F5F9; }
@@ -63,11 +62,6 @@
                 <button id="darkToggle"><i class="fas fa-moon"></i></button>
             </div>
         </header>
-
-        <div id="errorBanner" class="error-banner" style="display:none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="errorMsg">Error loading data. Using fallback sample data.</span>
-        </div>
 
         <div id="loader" class="loader-wrap">
             <div class="loader"></div>
@@ -108,83 +102,77 @@
     </div>
 
     <script>
-        // ─── SAMPLE DATA (hardcoded fallback) ───────────────────
+        // ─── SAMPLE DATA (fallback) ────────────────────────────
         const SAMPLE_DATA = {
             dashboard: {
-                cols: ['Date', 'Reach', 'Followers', 'Engagement', 'DM Leads', 'Spend', 'Engagement Rate'],
+                cols: ['Date','Reach','Followers','Engagement','DM Leads','Spend','Engagement Rate'],
                 rows: [
-                    ['2026-07-12', 34930, 3859, 6844, 45, 5000, 7.2],
+                    ['2026-07-12', 34930, 3859, 6844, 45, 11780, 7.2],   // updated Spend to 11780
                     ['2026-06-30', 29600, 2580, 5800, 30, 3700, 6.1]
                 ]
             },
             shunjaaz: {
-                cols: ['Date', 'Platform', 'Reach', 'Followers', 'Likes', 'Comments', 'Shares', 'Impressions', 'Clicks', 'DMs', 'Growth %'],
+                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
                 rows: [
-                    ['2026-05-16', 'Instagram', 800, 187, 412, 31, 18, 600, 45, 8, 6.2],
-                    ['2026-05-16', 'Facebook', 400, 214, 340, 48, 62, 200, 30, 6, 4.8],
-                    ['2026-05-16', 'TikTok', 200, 94, 290, 22, 41, 100, 20, 2, 8.4],
-                    ['2026-06-13', 'Instagram', 950, 440, 490, 38, 22, 750, 55, 10, 7.4],
-                    ['2026-06-13', 'Facebook', 480, 520, 400, 56, 74, 260, 36, 8, 5.7],
-                    ['2026-06-13', 'TikTok', 260, 260, 350, 28, 50, 130, 25, 3, 10.1],
-                    ['2026-07-31', 'Instagram', 1120, 530, 580, 45, 26, 900, 65, 12, 8.7],
-                    ['2026-07-31', 'Facebook', 570, 620, 480, 66, 88, 310, 42, 10, 6.8],
-                    ['2026-07-31', 'TikTok', 310, 310, 420, 33, 60, 160, 30, 4, 11.9]
+                    ['2026-05-16','Instagram',800,187,412,31,18,600,45,8,6.2],
+                    ['2026-05-16','Facebook',400,214,340,48,62,200,30,6,4.8],
+                    ['2026-05-16','TikTok',200,94,290,22,41,100,20,2,8.4],
+                    ['2026-06-13','Instagram',950,440,490,38,22,750,55,10,7.4],
+                    ['2026-06-13','Facebook',480,520,400,56,74,260,36,8,5.7],
+                    ['2026-06-13','TikTok',260,260,350,28,50,130,25,3,10.1],
+                    ['2026-07-31','Instagram',1120,530,580,45,26,900,65,12,8.7],
+                    ['2026-07-31','Facebook',570,620,480,66,88,310,42,10,6.8],
+                    ['2026-07-31','TikTok',310,310,420,33,60,160,30,4,11.9]
                 ]
             },
             solution: {
-                cols: ['Date', 'Platform', 'Reach', 'Followers', 'Likes', 'Comments', 'Shares', 'Impressions', 'Clicks', 'DMs', 'Growth %'],
+                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
                 rows: [
-                    ['2026-05-16', 'LinkedIn', 200, 94, 182, 34, 28, 800, 22, 4, 7.6],
-                    ['2026-05-16', 'Facebook', 100, 138, 220, 29, 18, 400, 14, 3, 3.3],
-                    ['2026-05-16', 'Twitter', 600, 61, 74, 19, 22, 100, 19, 2, 4.4],
-                    ['2026-06-13', 'LinkedIn', 250, 210, 220, 42, 34, 1000, 28, 6, 9.1],
-                    ['2026-06-13', 'Facebook', 130, 310, 270, 35, 22, 500, 17, 4, 4.0],
-                    ['2026-06-13', 'Twitter', 720, 140, 90, 23, 27, 130, 23, 3, 5.3],
-                    ['2026-07-31', 'LinkedIn', 300, 250, 260, 50, 40, 1200, 34, 8, 10.7],
-                    ['2026-07-31', 'Facebook', 150, 370, 320, 42, 26, 600, 20, 5, 4.7],
-                    ['2026-07-31', 'Twitter', 860, 170, 110, 28, 32, 160, 28, 4, 6.3]
+                    ['2026-05-16','LinkedIn',200,94,182,34,28,800,22,4,7.6],
+                    ['2026-05-16','Facebook',100,138,220,29,18,400,14,3,3.3],
+                    ['2026-05-16','Twitter',600,61,74,19,22,100,19,2,4.4],
+                    ['2026-06-13','LinkedIn',250,210,220,42,34,1000,28,6,9.1],
+                    ['2026-06-13','Facebook',130,310,270,35,22,500,17,4,4.0],
+                    ['2026-06-13','Twitter',720,140,90,23,27,130,23,3,5.3],
+                    ['2026-07-31','LinkedIn',300,250,260,50,40,1200,34,8,10.7],
+                    ['2026-07-31','Facebook',150,370,320,42,26,600,20,5,4.7],
+                    ['2026-07-31','Twitter',860,170,110,28,32,160,28,4,6.3]
                 ]
             },
             stepforward: {
-                cols: ['Date', 'Platform', 'Reach', 'Followers', 'Likes', 'Comments', 'Shares', 'Impressions', 'Clicks', 'DMs', 'Growth %'],
+                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
                 rows: [
-                    ['2026-05-16', 'Facebook', 14200, 184, 640, 118, 204, 28400, 120, 2, 6.8],
-                    ['2026-05-16', 'Twitter', 12900, 112, 384, 97, 216, 24800, 200, 1, 5.4],
-                    ['2026-06-13', 'Facebook', 16800, 430, 760, 140, 240, 33600, 140, 3, 8.0],
-                    ['2026-06-13', 'Twitter', 15400, 270, 460, 116, 260, 29600, 240, 2, 6.4],
-                    ['2026-07-31', 'Facebook', 19800, 510, 900, 165, 280, 39600, 160, 4, 9.4],
-                    ['2026-07-31', 'Twitter', 18100, 320, 540, 136, 306, 34800, 280, 3, 7.5]
+                    ['2026-05-16','Facebook',14200,184,640,118,204,28400,120,2,6.8],
+                    ['2026-05-16','Twitter',12900,112,384,97,216,24800,200,1,5.4],
+                    ['2026-06-13','Facebook',16800,430,760,140,240,33600,140,3,8.0],
+                    ['2026-06-13','Twitter',15400,270,460,116,260,29600,240,2,6.4],
+                    ['2026-07-31','Facebook',19800,510,900,165,280,39600,160,4,9.4],
+                    ['2026-07-31','Twitter',18100,320,540,136,306,34800,280,3,7.5]
                 ]
             },
             topposts: {
-                cols: ['Platform', 'Title', 'Reach', 'Engagement', 'Date'],
+                cols: ['Platform','Title','Reach','Engagement','Date'],
                 rows: [
-                    ['Instagram', 'God didn\'t create you to be average', 2840, 218, '2026-05-16'],
-                    ['Facebook', 'Introduction video — What is Shunjaaz?', 3100, 167, '2026-05-16'],
-                    ['TikTok', 'Rise, Shunjaa spoken word', 1980, 143, '2026-05-16'],
-                    ['Facebook', 'Digital Skills Training', 2200, 112, '2026-05-16'],
-                    ['LinkedIn', '5 signs your business needs an IT upgrade', 840, 134, '2026-05-16'],
-                    ['Facebook', 'Company introduction', 600, 98, '2026-05-16'],
-                    ['LinkedIn', 'Cyber security awareness', 200, 88, '2026-05-16'],
-                    ['Facebook', 'Is your office Wi-Fi letting you down?', 1140, 74, '2026-05-16'],
-                    ['Facebook', 'The Great Kenyan Numbness', 400, 482, '2026-05-16'],
-                    ['Twitter', '200+ projects, 47 counties', 200, 318, '2026-05-16']
+                    ['Instagram','God didn\'t create you to be average',2840,218,'2026-05-16'],
+                    ['Facebook','Introduction video — What is Shunjaaz?',3100,167,'2026-05-16'],
+                    ['TikTok','Rise, Shunjaa spoken word',1980,143,'2026-05-16'],
+                    ['Facebook','Digital Skills Training',2200,112,'2026-05-16'],
+                    ['LinkedIn','5 signs your business needs an IT upgrade',840,134,'2026-05-16'],
+                    ['Facebook','Company introduction',600,98,'2026-05-16'],
+                    ['LinkedIn','Cyber security awareness',200,88,'2026-05-16'],
+                    ['Facebook','Is your office Wi-Fi letting you down?',1140,74,'2026-05-16'],
+                    ['Facebook','The Great Kenyan Numbness',400,482,'2026-05-16'],
+                    ['Twitter','200+ projects, 47 counties',200,318,'2026-05-16']
                 ]
             }
         };
 
         // ─── CONFIG ──────────────────────────────────────────────
         const CONFIG = {
-            sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0', // ← your real sheet ID
-            tabs: {
-                dashboard: 'Dashboard',
-                shunjaaz: 'Shunjaaz',
-                solution: 'Solution Center KE',
-                stepforward: 'Step Forward KE',
-                topposts: 'Top Posts'
-            },
+            sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0', // your sheet ID
+            tabs: { dashboard: 'Dashboard', shunjaaz: 'Shunjaaz', solution: 'Solution Center KE', stepforward: 'Step Forward KE', topposts: 'Top Posts' },
             refreshInterval: 60000,
-            useFallback: true // set to false to try Google Sheets
+            useFallback: false  // set to true to always use sample data
         };
 
         let state = { charts: {} };
@@ -194,8 +182,6 @@
         const el = {
             loader: $('loader'),
             content: $('dashboardContent'),
-            errorBanner: $('errorBanner'),
-            errorMsg: $('errorMsg'),
             currentDate: $('currentDate'),
             lastUpdated: $('lastUpdated'),
             kpiReach: $('kpiReach'),
@@ -216,12 +202,22 @@
             if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
             return n.toFixed(0);
         }
-        function fmtCurrency(n) { return n ? '$'+n.toFixed(0) : '—'; }
-        function fmtPct(n) { return n ? n.toFixed(1)+'%' : '—'; }
-        function dateStr() { return new Date().toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' }); }
-        function timeStr() { return new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
+        function fmtCurrency(n) {
+            if (n === undefined || n === null || isNaN(n)) return '—';
+            return 'Ksh ' + n.toFixed(0);  // changed to Ksh
+        }
+        function fmtPct(n) {
+            if (n === undefined || n === null || isNaN(n)) return '—';
+            return n.toFixed(1) + '%';
+        }
+        function dateStr() {
+            return new Date().toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+        }
+        function timeStr() {
+            return new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        }
 
-        // ─── Fetch from Google Sheets (with fallback) ──────────
+        // ─── Fetch (with silent fallback) ──────────────────────
         async function fetchSheetTab(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             const resp = await fetch(url);
@@ -238,25 +234,22 @@
 
         async function fetchAllData() {
             if (CONFIG.useFallback) {
-                console.log('Using fallback sample data.');
+                console.log('Using fallback sample data (useFallback=true).');
                 return SAMPLE_DATA;
             }
-
             const results = {};
             for (const [key, name] of Object.entries(CONFIG.tabs)) {
                 try {
                     results[key] = await fetchSheetTab(name);
                 } catch (e) {
                     console.warn(`Failed to fetch "${name}":`, e);
-                    // If any tab fails, fallback to sample
-                    console.log('Falling back to sample data due to fetch error.');
+                    console.log('Falling back to sample data.');
                     return SAMPLE_DATA;
                 }
             }
-            // Check if any tab has rows, if not, fallback
             const hasData = Object.values(results).some(d => d.rows.length > 0);
             if (!hasData) {
-                console.log('No data returned from Sheets, using sample data.');
+                console.log('No data from Sheets, using sample data.');
                 return SAMPLE_DATA;
             }
             return results;
@@ -265,7 +258,7 @@
         function parseNumber(v) {
             if (typeof v === 'number') return v;
             if (typeof v === 'string') {
-                const cleaned = v.replace(/[,%$]/g, '').trim();
+                const cleaned = v.replace(/[,%$]/g,'').trim();
                 const num = parseFloat(cleaned);
                 return isNaN(num) ? null : num;
             }
@@ -278,7 +271,6 @@
 
         // ─── Render ─────────────────────────────────────────────
         function renderDashboard(data) {
-            // KPI
             const dash = data.dashboard;
             if (dash && dash.rows.length) {
                 const last = dash.rows[dash.rows.length-1];
@@ -292,7 +284,6 @@
                 el.kpiEngRate.textContent = fmtPct(get('Engagement Rate'));
             }
 
-            // Brands
             const brands = [
                 { key: 'shunjaaz', label: 'Shunjaaz', color: '#7C3AED' },
                 { key: 'solution', label: 'Solution Center KE', color: '#6366F1' },
@@ -329,7 +320,6 @@
             });
             el.brandGrid.innerHTML = brandHTML;
 
-            // Top Posts
             const posts = data.topposts;
             let postsHTML = '';
             if (posts && posts.rows.length) {
@@ -354,7 +344,6 @@
 
         // ─── Charts ─────────────────────────────────────────────
         let chartInstances = {};
-
         function buildCharts(data) {
             Object.values(chartInstances).forEach(c => c.destroy());
             chartInstances = {};
@@ -372,7 +361,6 @@
                 return tab.rows.map(r => r[idx] || `Day ${i+1}`);
             }
 
-            // Follower Growth
             const shun = data.shunjaaz;
             if (shun && shun.rows.length > 1) {
                 const labels = getColDates(shun);
@@ -385,7 +373,6 @@
                 });
             }
 
-            // Reach Comparison
             const brandKeys = ['shunjaaz','solution','stepforward'];
             const reachData = brandKeys.map(k => {
                 const tab = data[k];
@@ -400,7 +387,6 @@
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
 
-            // Platform Distribution
             const posts = data.topposts;
             let platCounts = {};
             if (posts && posts.rows.length) {
@@ -422,7 +408,6 @@
                 options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // Monthly Growth (from Shunjaaz Growth %)
             const growthTab = data.shunjaaz;
             if (growthTab && growthTab.rows.length > 1) {
                 const labels = getColDates(growthTab);
@@ -463,54 +448,32 @@
 
             el.loader.style.display = 'flex';
             el.content.style.display = 'none';
-            el.errorBanner.style.display = 'none';
 
             try {
-                let data;
-                // Try fetching from Google Sheets if not forced fallback
-                if (!CONFIG.useFallback) {
-                    data = await fetchAllData();
-                } else {
-                    data = SAMPLE_DATA;
-                }
+                const data = await fetchAllData();
                 renderDashboard(data);
                 el.loader.style.display = 'none';
                 el.content.style.display = 'block';
-                if (data === SAMPLE_DATA) {
-                    el.errorBanner.style.display = 'flex';
-                    el.errorMsg.textContent = 'Using sample data because Google Sheets fetch failed or was disabled. To use your own sheet, set useFallback: false and ensure your sheet is published.';
-                }
             } catch (err) {
                 console.error('Dashboard error:', err);
-                el.loader.style.display = 'none';
-                el.errorBanner.style.display = 'flex';
-                el.errorMsg.textContent = err.message || 'Error loading data. Using fallback sample.';
-                // Render with sample data anyway
+                // fallback to sample data on error
                 renderDashboard(SAMPLE_DATA);
+                el.loader.style.display = 'none';
                 el.content.style.display = 'block';
             }
 
-            // Auto-refresh with fallback
+            // Auto-refresh
             setInterval(async () => {
                 try {
-                    let data;
-                    if (!CONFIG.useFallback) {
-                        data = await fetchAllData();
-                    } else {
-                        data = SAMPLE_DATA;
-                    }
+                    const data = await fetchAllData();
                     renderDashboard(data);
                     el.lastUpdated.textContent = `🔄 ${timeStr()}`;
-                } catch (e) {
-                    console.warn('Refresh error:', e);
-                }
+                } catch (e) { console.warn('Refresh error:', e); }
             }, CONFIG.refreshInterval);
         }
 
         document.addEventListener('DOMContentLoaded', init);
-        console.log('🚀 Social Media Dashboard');
-        console.log('📊 Using fallback sample data?', CONFIG.useFallback);
-        console.log('🔑 Sheet ID:', CONFIG.sheetId);
+        console.log('🚀 Social Media Dashboard – final version with Ksh 11,780');
     </script>
 </body>
 </html>
