@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solution Centre Analytics · Social Dashboard</title>
+    <title>Social Media Dashboard · Analytics</title>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
-        /* ───────────── CSS ───────────── */
         *,
         *::before,
         *::after {
@@ -24,7 +23,6 @@
             margin: 0;
             padding: 0;
         }
-
         :root {
             --primary: #7C3AED;
             --primary-light: #A78BFA;
@@ -46,7 +44,6 @@
             --transition: 0.25s ease;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-
         .dark {
             --bg: #0F172A;
             --surface: #1E293B;
@@ -57,11 +54,9 @@
             --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
             --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.5);
         }
-
         html {
             scroll-behavior: smooth;
         }
-
         body {
             font-family: var(--font);
             background: var(--bg);
@@ -70,8 +65,6 @@
             padding: 20px;
             min-height: 100vh;
         }
-
-        /* scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -83,14 +76,10 @@
             background: var(--primary-light);
             border-radius: 20px;
         }
-
-        /* ─── container ─── */
         .app {
             max-width: 1440px;
             margin: 0 auto;
         }
-
-        /* ─── top bar ─── */
         .topbar {
             display: flex;
             flex-wrap: wrap;
@@ -104,13 +93,11 @@
             margin-bottom: 28px;
             transition: background var(--transition), box-shadow var(--transition);
         }
-
         .topbar-left {
             display: flex;
             align-items: center;
             gap: 14px;
         }
-
         .logo {
             display: flex;
             align-items: center;
@@ -126,7 +113,6 @@
             padding: 8px;
             border-radius: 10px;
         }
-
         .topbar-center {
             display: flex;
             align-items: center;
@@ -146,13 +132,11 @@
             border-radius: 40px;
             font-weight: 600;
         }
-
         .topbar-right {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .topbar-right button {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -179,15 +163,12 @@
             justify-content: center;
             font-size: 1.1rem;
         }
-
-        /* ─── KPI grid ─── */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 16px;
             margin-bottom: 28px;
         }
-
         .kpi-card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -224,31 +205,6 @@
             opacity: 0.15;
             color: var(--primary);
         }
-        .kpi-card .trend {
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 6px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px;
-            border-radius: 40px;
-            background: #ECFDF5;
-            color: #065F46;
-        }
-        .kpi-card .trend.down {
-            background: #FEF2F2;
-            color: #991B1B;
-        }
-        .dark .kpi-card .trend {
-            background: #1E293B;
-            color: #6EE7B7;
-        }
-        .dark .kpi-card .trend.down {
-            background: #1E293B;
-            color: #FCA5A5;
-        }
-
         .kpi-card:nth-child(1) {
             animation-delay: 0.05s;
         }
@@ -267,7 +223,6 @@
         .kpi-card:nth-child(6) {
             animation-delay: 0.30s;
         }
-
         @keyframes fadeUp {
             0% {
                 opacity: 0;
@@ -278,15 +233,12 @@
                 transform: translateY(0);
             }
         }
-
-        /* ─── brand summary ─── */
         .brand-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 16px;
             margin-bottom: 28px;
         }
-
         .brand-card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -362,15 +314,12 @@
             font-weight: 600;
             color: var(--primary);
         }
-
-        /* ─── charts grid ─── */
         .charts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-bottom: 28px;
         }
-
         .chart-box {
             background: var(--surface);
             border-radius: var(--radius);
@@ -388,12 +337,9 @@
             max-height: 220px;
             max-width: 100%;
         }
-
         .chart-box.full {
             grid-column: 1 / -1;
         }
-
-        /* ─── top posts ─── */
         .posts-section {
             background: var(--surface);
             border-radius: var(--radius);
@@ -458,8 +404,6 @@
         .posts-table .platform-badge.tt {
             background: #000;
         }
-
-        /* ─── loading & error ─── */
         .loader-wrap {
             display: flex;
             flex-direction: column;
@@ -481,7 +425,6 @@
                 transform: rotate(360deg);
             }
         }
-
         .error-banner {
             background: #FEF2F2;
             color: #991B1B;
@@ -502,8 +445,6 @@
         .error-banner i {
             font-size: 1.2rem;
         }
-
-        /* ─── responsive ─── */
         @media (max-width: 1024px) {
             .charts-grid {
                 grid-template-columns: 1fr;
@@ -512,7 +453,6 @@
                 grid-column: 1;
             }
         }
-
         @media (max-width: 768px) {
             body {
                 padding: 12px;
@@ -553,7 +493,6 @@
                 max-height: 160px;
             }
         }
-
         @media (max-width: 480px) {
             .kpi-grid {
                 grid-template-columns: 1fr 1fr;
@@ -572,8 +511,6 @@
                 display: none;
             }
         }
-
-        /* ─── print ─── */
         @media print {
             .topbar-right button {
                 display: none !important;
@@ -616,15 +553,12 @@
     </style>
 </head>
 <body>
-
     <div class="app" id="app">
-
-        <!-- TOPBAR -->
         <header class="topbar">
             <div class="topbar-left">
                 <div class="logo">
                     <i class="fas fa-chart-pie"></i>
-                    <span>Solution Centre</span>
+                    <span>Social Media Dashboard</span>
                 </div>
             </div>
             <div class="topbar-center">
@@ -638,22 +572,17 @@
             </div>
         </header>
 
-        <!-- ERROR BANNER -->
         <div id="errorBanner" class="error-banner" style="display:none;">
             <i class="fas fa-exclamation-triangle"></i>
             <span id="errorMsg">Unable to load data from Google Sheets. Please check your connection or sheet configuration.</span>
         </div>
 
-        <!-- LOADER -->
         <div id="loader" class="loader-wrap">
             <div class="loader"></div>
             <span style="color:var(--text-secondary);font-weight:500;">Loading dashboard…</span>
         </div>
 
-        <!-- DASHBOARD CONTENT (hidden until loaded) -->
         <div id="dashboardContent" style="display:none;">
-
-            <!-- KPI CARDS -->
             <section class="kpi-grid" id="kpiGrid">
                 <div class="kpi-card"><div class="label">Total Reach</div><div class="value" id="kpiReach">—</div><i class="fas fa-eye icon"></i></div>
                 <div class="kpi-card"><div class="label">Followers</div><div class="value" id="kpiFollowers">—</div><i class="fas fa-users icon"></i></div>
@@ -663,12 +592,8 @@
                 <div class="kpi-card"><div class="label">Engagement Rate</div><div class="value" id="kpiEngRate">—</div><i class="fas fa-percent icon"></i></div>
             </section>
 
-            <!-- BRAND SUMMARY -->
-            <section class="brand-grid" id="brandGrid">
-                <!-- filled by JS -->
-            </section>
+            <section class="brand-grid" id="brandGrid"></section>
 
-            <!-- CHARTS -->
             <section class="charts-grid">
                 <div class="chart-box"><h4><i class="fas fa-chart-line" style="color:var(--primary);margin-right:6px;"></i>Follower Growth</h4><canvas id="chartFollowerGrowth"></canvas></div>
                 <div class="chart-box"><h4><i class="fas fa-chart-bar" style="color:var(--indigo);margin-right:6px;"></i>Reach Comparison</h4><canvas id="chartReachCompare"></canvas></div>
@@ -676,7 +601,6 @@
                 <div class="chart-box"><h4><i class="fas fa-chart-area" style="color:var(--primary-light);margin-right:6px;"></i>Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
             </section>
 
-            <!-- TOP POSTS -->
             <section class="posts-section">
                 <h4><span><i class="fas fa-fire" style="color:var(--amber);margin-right:6px;"></i>Top Performing Posts</span>
                     <span style="font-weight:400;font-size:0.75rem;color:var(--text-muted);">auto-refresh every 60s</span>
@@ -690,19 +614,15 @@
             </section>
 
             <footer style="text-align:center;padding:20px 0 10px;font-size:0.75rem;color:var(--text-muted);border-top:1px solid var(--border);">
-                &copy; 2026 Solution Centre Analytics &middot; Data from Google Sheets &middot; Built with <i class="fas fa-heart" style="color:var(--primary);"></i>
+                &copy; 2026 Social Media Dashboard &middot; Data from Google Sheets &middot; Built with <i class="fas fa-heart" style="color:var(--primary);"></i>
             </footer>
         </div>
     </div>
 
     <script>
-        /* ───────────── JAVASCRIPT ───────────── */
-
-        // ─── CONFIG ──────────────────────────────────────────────
         const CONFIG = {
-            // ✅ Your Sheet ID (extracted from your publish link)
-            sheetId: '2PACX-1vSAi0YlIQ1h1V2iG8gY2JpSAuWmV48uQ-ZinhyNY676PSGlO9Y1Rxi6pqQ_GRhPgqkat-wdVQWA0i2v',
-            // Tabs to fetch
+            // ✅ Your new Sheet ID (from the edit URL)
+            sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0',
             tabs: {
                 dashboard: 'Dashboard',
                 shunjaaz: 'Shunjaaz',
@@ -710,17 +630,15 @@
                 stepforward: 'Step Forward KE',
                 topposts: 'Top Posts'
             },
-            refreshInterval: 60000, // 60 seconds
+            refreshInterval: 60000,
         };
 
-        // ─── STATE ──────────────────────────────────────────────
         let state = {
             data: {},
             charts: {},
             dark: localStorage.getItem('sc-dark') === 'true',
         };
 
-        // ─── DOM refs ───────────────────────────────────────────
         const $ = (s) => document.querySelector(s);
         const $$ = (s) => document.querySelectorAll(s);
 
@@ -742,7 +660,6 @@
             darkToggle: $('#darkToggle'),
         };
 
-        // ─── UTILITIES ──────────────────────────────────────────
         function fmt(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
             if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
@@ -761,22 +678,19 @@
         }
 
         function dateStr() {
-            return new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short',
-                day: 'numeric' });
+            return new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
         }
 
         function timeStr() {
             return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
 
-        // ─── GOOGLE SHEETS FETCH (gviz JSON) ──────────────────
         async function fetchSheetTab(sheetName) {
             const url =
                 `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             const resp = await fetch(url);
             if (!resp.ok) throw new Error(`HTTP ${resp.status} for tab "${sheetName}"`);
             const raw = await resp.text();
-            // parse JSONP: "/*O_o*/google.visualization.Query.setResponse({...});"
             const match = raw.match(/google\.visualization\.Query\.setResponse\((.+)\);/);
             if (!match) throw new Error('Invalid gviz response');
             const json = JSON.parse(match[1]);
@@ -801,7 +715,6 @@
             return results;
         }
 
-        // ─── PARSE HELPERS ──────────────────────────────────────
         function parseNumber(v) {
             if (typeof v === 'number') return v;
             if (typeof v === 'string') {
@@ -818,21 +731,10 @@
             return row[idx] !== undefined ? row[idx] : null;
         }
 
-        function rowsToObjects(rows, cols) {
-            return rows.map(row => {
-                const obj = {};
-                cols.forEach((c, i) => { obj[c] = row[i] !== undefined ? row[i] : null; });
-                return obj;
-            });
-        }
-
-        // ─── RENDER DASHBOARD ──────────────────────────────────
         function renderDashboard(data) {
-            // ── KPI from Dashboard tab ──
             const dash = data.dashboard;
             let kpiRow = null;
             if (dash && dash.rows.length > 0) {
-                // take the most recent row (last)
                 kpiRow = dash.rows[dash.rows.length - 1];
                 const cols = dash.cols;
                 const get = (name) => parseNumber(getRowVal(kpiRow, name, cols));
@@ -844,7 +746,6 @@
                 el.kpiEngRate.textContent = fmtPct(get('Engagement Rate'));
             }
 
-            // ── Brand Summary ──
             const brands = [
                 { key: 'shunjaaz', label: 'Shunjaaz', color: '#7C3AED' },
                 { key: 'solution', label: 'Solution Center KE', color: '#6366F1' },
@@ -852,7 +753,7 @@
             ];
 
             let brandHTML = '';
-            brands.forEach((b, idx) => {
+            brands.forEach((b) => {
                 const tab = data[b.key];
                 let reach = '—',
                     followers = '—',
@@ -892,7 +793,6 @@
             });
             el.brandGrid.innerHTML = brandHTML;
 
-            // ── Top Posts ──
             const posts = data.topposts;
             let postsHTML = '';
             if (posts && posts.rows.length > 0) {
@@ -923,23 +823,16 @@
                 postsHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No posts found</td></tr>`;
             }
             el.postsBody.innerHTML = postsHTML;
-
-            // ── Update timestamp ──
             el.lastUpdated.textContent = `🔄 ${timeStr()}`;
-
-            // ── Charts ──
             buildCharts(data);
         }
 
-        // ─── CHARTS ─────────────────────────────────────────────
         let chartInstances = {};
 
         function buildCharts(data) {
-            // Destroy existing charts
             Object.values(chartInstances).forEach(c => c.destroy());
             chartInstances = {};
 
-            // Helper: get numeric column values
             function getColValues(tab, colName) {
                 if (!tab || !tab.rows.length) return [];
                 const idx = tab.cols.indexOf(colName);
@@ -954,7 +847,6 @@
                 return tab.rows.map(r => r[idx] || `Day ${i+1}`);
             }
 
-            // ── Follower Growth (Line) ──
             const shun = data.shunjaaz;
             if (shun && shun.rows.length > 1) {
                 const labels = getColDates(shun);
@@ -987,9 +879,8 @@
                 });
             }
 
-            // ── Reach Comparison (Bar) ──
-            const brands = ['shunjaaz', 'solution', 'stepforward'];
-            const reachData = brands.map(k => {
+            const brandKeys = ['shunjaaz', 'solution', 'stepforward'];
+            const reachData = brandKeys.map(k => {
                 const tab = data[k];
                 if (!tab || !tab.rows.length) return 0;
                 const vals = getColValues(tab, 'Reach');
@@ -1018,7 +909,6 @@
                 }
             });
 
-            // ── Platform Distribution (Pie) ──
             const posts = data.topposts;
             let platCounts = {};
             if (posts && posts.rows.length) {
@@ -1053,7 +943,6 @@
                 }
             });
 
-            // ── Monthly Growth (Area) ──
             const growthTab = data.shunjaaz;
             if (growthTab && growthTab.rows.length > 1) {
                 const labels = getColDates(growthTab);
@@ -1098,7 +987,6 @@
             }
         }
 
-        // ─── EXPORT CHARTS ──────────────────────────────────────
         function exportCharts() {
             const canvases = document.querySelectorAll('.chart-box canvas');
             if (!canvases.length) return;
@@ -1109,7 +997,6 @@
             link.click();
         }
 
-        // ─── DARK MODE ──────────────────────────────────────────
         function applyDark(dark) {
             document.documentElement.classList.toggle('dark', dark);
             el.darkToggle.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
@@ -1121,15 +1008,9 @@
             applyDark(!state.dark);
         });
 
-        // ─── MAIN INIT ──────────────────────────────────────────
         async function init() {
-            // Set date
             el.currentDate.textContent = dateStr();
-
-            // Dark mode
             applyDark(state.dark);
-
-            // Show loader
             el.loader.style.display = 'flex';
             el.content.style.display = 'none';
             el.errorBanner.style.display = 'none';
@@ -1155,7 +1036,6 @@
                 });
             }
 
-            // Auto-refresh
             setInterval(async () => {
                 try {
                     const data = await fetchAllData();
@@ -1168,13 +1048,10 @@
             }, CONFIG.refreshInterval);
         }
 
-        // ─── BOOT ──────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', init);
-
-        console.log('🚀 Solution Centre Analytics Dashboard');
+        console.log('🚀 Social Media Dashboard');
         console.log('📊 Data from Google Sheet:', CONFIG.sheetId);
         console.log('🔄 Auto-refresh every', CONFIG.refreshInterval / 1000, 'seconds');
     </script>
-
 </body>
 </html>
