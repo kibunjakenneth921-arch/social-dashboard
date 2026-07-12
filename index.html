@@ -3,6 +3,436 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Media Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ─── Minimal styles (keep the same as before) ─── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #F8FAFC; padding: 20px; }
+        .app { max-width: 1440px; margin: 0 auto; }
+        .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: white; padding: 12px 24px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); margin-bottom: 28px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.25rem; color: #7C3AED; }
+        .logo i { font-size: 1.6rem; background: #7C3AED; color: #fff; padding: 8px; border-radius: 10px; }
+        .topbar-center { display: flex; gap: 12px; font-size: 0.9rem; color: #475569; }
+        .topbar-center .badge { background: #A78BFA; color: #fff; padding: 2px 12px; border-radius: 40px; font-weight: 600; font-size: 0.7rem; }
+        .topbar-right { display: flex; gap: 12px; }
+        .topbar-right button { background: white; border: 1px solid #E2E8F0; border-radius: 40px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .kpi-card { background: white; border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+        .kpi-card .label { font-size: 0.75rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; }
+        .kpi-card .value { font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
+        .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .brand-card { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border-left: 4px solid #7C3AED; }
+        .brand-card .name { font-weight: 700; display: flex; justify-content: space-between; }
+        .brand-card .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; text-align: center; }
+        .brand-card .metrics .num { font-weight: 700; font-size: 1.1rem; }
+        .brand-card .metrics .lbl { font-size: 0.7rem; color: #94A3B8; text-transform: uppercase; }
+        .brand-card .growth { margin-top: 12px; font-weight: 600; color: #7C3AED; }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+        .chart-box { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+        .chart-box canvas { max-height: 220px; max-width: 100%; }
+        .posts-section { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); margin-bottom: 28px; }
+        .posts-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .posts-table th { text-align: left; padding: 10px 8px; color: #94A3B8; border-bottom: 1px solid #E2E8F0; font-size: 0.7rem; text-transform: uppercase; }
+        .posts-table td { padding: 10px 8px; border-bottom: 1px solid #E2E8F0; }
+        .posts-table .platform-badge { display: inline-block; padding: 2px 10px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; background: #A78BFA; color: #fff; }
+        .loader-wrap { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; gap: 16px; }
+        .loader { width: 44px; height: 44px; border: 4px solid #E2E8F0; border-top: 4px solid #7C3AED; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error-banner { background: #FEF2F2; color: #991B1B; padding: 14px 24px; border-radius: 10px; border-left: 4px solid #DC2626; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; font-weight: 500; }
+        footer { text-align: center; padding: 20px 0 10px; font-size: 0.75rem; color: #94A3B8; border-top: 1px solid #E2E8F0; }
+        @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="logo"><i class="fas fa-chart-pie"></i><span>Social Media Dashboard</span></div>
+            </div>
+            <div class="topbar-center">
+                <span><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></span>
+                <span class="badge" id="lastUpdated">⏳ loading…</span>
+            </div>
+            <div class="topbar-right">
+                <button onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                <button onclick="exportCharts()"><i class="fas fa-download"></i> Export</button>
+                <button id="darkToggle"><i class="fas fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div id="errorBanner" class="error-banner" style="display:none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorMsg">Unable to load data. Check console for details.</span>
+        </div>
+
+        <div id="loader" class="loader-wrap">
+            <div class="loader"></div>
+            <span style="color:#475569;">Loading dashboard…</span>
+        </div>
+
+        <div id="dashboardContent" style="display:none;">
+            <section class="kpi-grid" id="kpiGrid">
+                <div class="kpi-card"><div class="label">Total Reach</div><div class="value" id="kpiReach">—</div></div>
+                <div class="kpi-card"><div class="label">Followers</div><div class="value" id="kpiFollowers">—</div></div>
+                <div class="kpi-card"><div class="label">Engagement</div><div class="value" id="kpiEngagement">—</div></div>
+                <div class="kpi-card"><div class="label">DM Leads</div><div class="value" id="kpiDmLeads">—</div></div>
+                <div class="kpi-card"><div class="label">Ad Spend</div><div class="value" id="kpiAdSpend">—</div></div>
+                <div class="kpi-card"><div class="label">Engagement Rate</div><div class="value" id="kpiEngRate">—</div></div>
+            </section>
+
+            <section class="brand-grid" id="brandGrid"></section>
+
+            <section class="charts-grid">
+                <div class="chart-box"><h4>Follower Growth</h4><canvas id="chartFollowerGrowth"></canvas></div>
+                <div class="chart-box"><h4>Reach Comparison</h4><canvas id="chartReachCompare"></canvas></div>
+                <div class="chart-box"><h4>Platform Distribution</h4><canvas id="chartPlatformDist"></canvas></div>
+                <div class="chart-box"><h4>Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
+            </section>
+
+            <section class="posts-section">
+                <h4>Top Performing Posts <span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">auto-refresh 60s</span></h4>
+                <div class="posts-table-wrap">
+                    <table class="posts-table">
+                        <thead><tr><th>Platform</th><th>Title</th><th>Reach</th><th>Engagement</th><th>Date</th></tr></thead>
+                        <tbody id="postsBody"><tr><td colspan="5" style="text-align:center;color:#94A3B8;">No posts</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer>&copy; 2026 Social Media Dashboard &middot; Data from Google Sheets</footer>
+        </div>
+    </div>
+
+    <script>
+        // ─── CONFIG ──────────────────────────────────────────────
+        // ⚠️ Replace this sheetId with your own when ready
+        const CONFIG = {
+            sheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms', // Public test sheet
+            tabs: {
+                dashboard: 'Dashboard',
+                shunjaaz: 'Shunjaaz',
+                solution: 'Solution Center KE',
+                stepforward: 'Step Forward KE',
+                topposts: 'Top Posts'
+            },
+            refreshInterval: 60000
+        };
+
+        let state = { charts: {} };
+
+        // ─── DOM refs ───────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        const el = {
+            loader: $('loader'),
+            content: $('dashboardContent'),
+            errorBanner: $('errorBanner'),
+            errorMsg: $('errorMsg'),
+            currentDate: $('currentDate'),
+            lastUpdated: $('lastUpdated'),
+            kpiReach: $('kpiReach'),
+            kpiFollowers: $('kpiFollowers'),
+            kpiEngagement: $('kpiEngagement'),
+            kpiDmLeads: $('kpiDmLeads'),
+            kpiAdSpend: $('kpiAdSpend'),
+            kpiEngRate: $('kpiEngRate'),
+            brandGrid: $('brandGrid'),
+            postsBody: $('postsBody'),
+            darkToggle: $('darkToggle'),
+        };
+
+        // ─── Utilities ──────────────────────────────────────────
+        function fmt(n) {
+            if (n === undefined || n === null || isNaN(n)) return '—';
+            if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+            if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+            return n.toFixed(0);
+        }
+        function fmtCurrency(n) { return n ? '$'+n.toFixed(0) : '—'; }
+        function fmtPct(n) { return n ? n.toFixed(1)+'%' : '—'; }
+        function dateStr() { return new Date().toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' }); }
+        function timeStr() { return new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
+
+        // ─── Fetch from Google Sheets ──────────────────────────
+        async function fetchSheetTab(sheetName) {
+            const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status} for tab "${sheetName}"`);
+            const raw = await resp.text();
+            const match = raw.match(/google\.visualization\.Query\.setResponse\((.+)\);/);
+            if (!match) throw new Error('Invalid gviz response');
+            const json = JSON.parse(match[1]);
+            const table = json.table;
+            const cols = table.cols.map(c => c.label);
+            const rows = table.rows.map(r => r.c.map(c => c ? c.v : null));
+            return { cols, rows };
+        }
+
+        async function fetchAllData() {
+            const results = {};
+            for (const [key, name] of Object.entries(CONFIG.tabs)) {
+                try {
+                    results[key] = await fetchSheetTab(name);
+                } catch (e) {
+                    console.warn(`Failed to fetch "${name}":`, e);
+                    results[key] = { cols: [], rows: [] };
+                }
+            }
+            return results;
+        }
+
+        function parseNumber(v) {
+            if (typeof v === 'number') return v;
+            if (typeof v === 'string') {
+                const cleaned = v.replace(/[,%$]/g, '').trim();
+                const num = parseFloat(cleaned);
+                return isNaN(num) ? null : num;
+            }
+            return null;
+        }
+        function getRowVal(row, colName, cols) {
+            const idx = cols.indexOf(colName);
+            return idx === -1 ? null : row[idx];
+        }
+
+        // ─── Render ─────────────────────────────────────────────
+        function renderDashboard(data) {
+            // KPI
+            const dash = data.dashboard;
+            if (dash && dash.rows.length) {
+                const last = dash.rows[dash.rows.length-1];
+                const cols = dash.cols;
+                const get = (name) => parseNumber(getRowVal(last, name, cols));
+                el.kpiReach.textContent = fmt(get('Reach'));
+                el.kpiFollowers.textContent = fmt(get('Followers'));
+                el.kpiEngagement.textContent = fmt(get('Engagement'));
+                el.kpiDmLeads.textContent = fmt(get('DM Leads'));
+                el.kpiAdSpend.textContent = fmtCurrency(get('Spend'));
+                el.kpiEngRate.textContent = fmtPct(get('Engagement Rate'));
+            }
+
+            // Brands
+            const brands = [
+                { key: 'shunjaaz', label: 'Shunjaaz', color: '#7C3AED' },
+                { key: 'solution', label: 'Solution Center KE', color: '#6366F1' },
+                { key: 'stepforward', label: 'Step Forward KE', color: '#D97706' }
+            ];
+            let brandHTML = '';
+            brands.forEach(b => {
+                const tab = data[b.key];
+                let reach='—', followers='—', engagement='—', growth='—', statusLabel='Stable';
+                if (tab && tab.rows.length) {
+                    const last = tab.rows[tab.rows.length-1];
+                    const cols = tab.cols;
+                    const get = (name) => parseNumber(getRowVal(last, name, cols));
+                    reach = fmt(get('Reach'));
+                    followers = fmt(get('Followers'));
+                    engagement = fmt(get('Engagement'));
+                    const g = get('Growth %');
+                    if (g !== null && !isNaN(g)) {
+                        growth = (g>0?'+':'')+g.toFixed(1)+'%';
+                        statusLabel = g>0?'Growing':g<0?'Declining':'Stable';
+                    }
+                }
+                brandHTML += `
+                    <div class="brand-card" style="border-left-color:${b.color};">
+                        <div class="name"><span>${b.label}</span><span style="font-size:0.7rem;font-weight:600;padding:2px 12px;border-radius:40px;background:#D1FAE5;color:#065F46;">${statusLabel}</span></div>
+                        <div class="metrics">
+                            <div class="item"><div class="num">${reach}</div><div class="lbl">Reach</div></div>
+                            <div class="item"><div class="num">${followers}</div><div class="lbl">Followers</div></div>
+                            <div class="item"><div class="num">${engagement}</div><div class="lbl">Engagement</div></div>
+                        </div>
+                        <div class="growth">Growth ${growth}</div>
+                    </div>
+                `;
+            });
+            el.brandGrid.innerHTML = brandHTML;
+
+            // Top Posts
+            const posts = data.topposts;
+            let postsHTML = '';
+            if (posts && posts.rows.length) {
+                const cols = posts.cols;
+                posts.rows.slice(0,10).forEach(row => {
+                    const get = (name) => getRowVal(row, name, cols);
+                    const platform = get('Platform') || 'Social';
+                    const title = get('Title') || 'Untitled';
+                    const reach = fmt(parseNumber(get('Reach')));
+                    const engagement = fmt(parseNumber(get('Engagement')));
+                    const date = get('Date') || '—';
+                    postsHTML += `<tr><td><span class="platform-badge">${platform}</span></td><td>${title}</td><td>${reach}</td><td>${engagement}</td><td>${date}</td></tr>`;
+                });
+            } else {
+                postsHTML = `<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No posts found</td></tr>`;
+            }
+            el.postsBody.innerHTML = postsHTML;
+
+            el.lastUpdated.textContent = `🔄 ${timeStr()}`;
+            buildCharts(data);
+        }
+
+        // ─── Charts ─────────────────────────────────────────────
+        let chartInstances = {};
+
+        function buildCharts(data) {
+            Object.values(chartInstances).forEach(c => c.destroy());
+            chartInstances = {};
+
+            function getColValues(tab, colName) {
+                if (!tab || !tab.rows.length) return [];
+                const idx = tab.cols.indexOf(colName);
+                if (idx === -1) return [];
+                return tab.rows.map(r => parseNumber(r[idx]) || 0);
+            }
+            function getColDates(tab) {
+                if (!tab || !tab.rows.length) return [];
+                const idx = tab.cols.indexOf('Date');
+                if (idx === -1) return tab.rows.map((_,i) => `Day ${i+1}`);
+                return tab.rows.map(r => r[idx] || `Day ${i+1}`);
+            }
+
+            // Follower Growth
+            const shun = data.shunjaaz;
+            if (shun && shun.rows.length > 1) {
+                const labels = getColDates(shun);
+                const followers = getColValues(shun, 'Followers');
+                const ctx = document.getElementById('chartFollowerGrowth').getContext('2d');
+                chartInstances.follower = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels, datasets: [{ label: 'Shunjaaz', data: followers, borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.08)', fill: true, tension: 0.3 }] },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+                });
+            }
+
+            // Reach Comparison
+            const brandKeys = ['shunjaaz','solution','stepforward'];
+            const reachData = brandKeys.map(k => {
+                const tab = data[k];
+                if (!tab || !tab.rows.length) return 0;
+                const vals = getColValues(tab, 'Reach');
+                return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+            });
+            const ctxBar = document.getElementById('chartReachCompare').getContext('2d');
+            chartInstances.reach = new Chart(ctxBar, {
+                type: 'bar',
+                data: { labels: ['Shunjaaz','Solution Center','Step Forward'], datasets: [{ label: 'Avg Reach', data: reachData, backgroundColor: ['#7C3AED','#6366F1','#D97706'], borderRadius: 6 }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // Platform Distribution
+            const posts = data.topposts;
+            let platCounts = {};
+            if (posts && posts.rows.length) {
+                const idx = posts.cols.indexOf('Platform');
+                if (idx !== -1) {
+                    posts.rows.forEach(row => {
+                        const p = row[idx] || 'Other';
+                        platCounts[p] = (platCounts[p]||0)+1;
+                    });
+                }
+            }
+            const platLabels = Object.keys(platCounts);
+            const platValues = Object.values(platCounts);
+            const colors = ['#7C3AED','#6366F1','#D97706','#F59E0B','#A78BFA'];
+            const ctxPie = document.getElementById('chartPlatformDist').getContext('2d');
+            chartInstances.platform = new Chart(ctxPie, {
+                type: 'pie',
+                data: { labels: platLabels.length ? platLabels : ['No data'], datasets: [{ data: platValues.length ? platValues : [1], backgroundColor: colors.slice(0, platValues.length||1), borderWidth: 0 }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Monthly Growth (from Shunjaaz Growth %)
+            const growthTab = data.shunjaaz;
+            if (growthTab && growthTab.rows.length > 1) {
+                const labels = getColDates(growthTab);
+                const growth = getColValues(growthTab, 'Growth %');
+                const ctxArea = document.getElementById('chartMonthlyGrowth').getContext('2d');
+                chartInstances.monthly = new Chart(ctxArea, {
+                    type: 'line',
+                    data: { labels, datasets: [{ label: 'Growth %', data: growth, borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.15)', fill: true, tension: 0.3 }] },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        // ─── Export ─────────────────────────────────────────────
+        function exportCharts() {
+            const canvas = document.querySelector('.chart-box canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'dashboard-charts.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        }
+
+        // ─── Dark mode ──────────────────────────────────────────
+        let dark = localStorage.getItem('sc-dark') === 'true';
+        function applyDark(d) {
+            document.documentElement.classList.toggle('dark', d);
+            el.darkToggle.innerHTML = d ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('sc-dark', d);
+        }
+        el.darkToggle.addEventListener('click', () => { dark = !dark; applyDark(dark); });
+        applyDark(dark);
+
+        // ─── Init ──────────────────────────────────────────────
+        async function init() {
+            el.currentDate.textContent = dateStr();
+
+            // Show loader
+            el.loader.style.display = 'flex';
+            el.content.style.display = 'none';
+            el.errorBanner.style.display = 'none';
+
+            try {
+                const data = await fetchAllData();
+                // Check if we have any data
+                const hasData = Object.values(data).some(d => d.rows.length > 0);
+                if (!hasData) {
+                    throw new Error('No data returned from Google Sheets. Check sheet name and publish status.');
+                }
+                renderDashboard(data);
+                el.loader.style.display = 'none';
+                el.content.style.display = 'block';
+            } catch (err) {
+                console.error('Dashboard error:', err);
+                el.loader.style.display = 'none';
+                el.errorBanner.style.display = 'flex';
+                el.errorMsg.textContent = err.message || 'Failed to load data. Check console for details.';
+                // Show empty content so user sees the UI
+                el.content.style.display = 'block';
+                renderDashboard({
+                    dashboard: { cols: [], rows: [] },
+                    shunjaaz: { cols: [], rows: [] },
+                    solution: { cols: [], rows: [] },
+                    stepforward: { cols: [], rows: [] },
+                    topposts: { cols: [], rows: [] }
+                });
+            }
+
+            // Auto-refresh
+            setInterval(async () => {
+                try {
+                    const data = await fetchAllData();
+                    renderDashboard(data);
+                    el.lastUpdated.textContent = `🔄 ${timeStr()}`;
+                } catch (e) {
+                    console.warn('Refresh error:', e);
+                }
+            }, CONFIG.refreshInterval);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Social Media Dashboard · Analytics</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
