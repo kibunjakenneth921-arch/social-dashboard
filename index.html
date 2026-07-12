@@ -205,33 +205,15 @@
             opacity: 0.15;
             color: var(--primary);
         }
-        .kpi-card:nth-child(1) {
-            animation-delay: 0.05s;
-        }
-        .kpi-card:nth-child(2) {
-            animation-delay: 0.10s;
-        }
-        .kpi-card:nth-child(3) {
-            animation-delay: 0.15s;
-        }
-        .kpi-card:nth-child(4) {
-            animation-delay: 0.20s;
-        }
-        .kpi-card:nth-child(5) {
-            animation-delay: 0.25s;
-        }
-        .kpi-card:nth-child(6) {
-            animation-delay: 0.30s;
-        }
+        .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.10s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.20s; }
+        .kpi-card:nth-child(5) { animation-delay: 0.25s; }
+        .kpi-card:nth-child(6) { animation-delay: 0.30s; }
         @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         .brand-grid {
             display: grid;
@@ -248,15 +230,9 @@
             border-left: 4px solid var(--primary);
             animation: fadeUp 0.5s ease both;
         }
-        .brand-card:nth-child(1) {
-            animation-delay: 0.10s;
-        }
-        .brand-card:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-        .brand-card:nth-child(3) {
-            animation-delay: 0.20s;
-        }
+        .brand-card:nth-child(1) { animation-delay: 0.10s; }
+        .brand-card:nth-child(2) { animation-delay: 0.15s; }
+        .brand-card:nth-child(3) { animation-delay: 0.20s; }
         .brand-card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
@@ -337,9 +313,7 @@
             max-height: 220px;
             max-width: 100%;
         }
-        .chart-box.full {
-            grid-column: 1 / -1;
-        }
+        .chart-box.full { grid-column: 1 / -1; }
         .posts-section {
             background: var(--surface);
             border-radius: var(--radius);
@@ -357,9 +331,7 @@
             align-items: center;
             justify-content: space-between;
         }
-        .posts-table-wrap {
-            overflow-x: auto;
-        }
+        .posts-table-wrap { overflow-x: auto; }
         .posts-table {
             width: 100%;
             border-collapse: collapse;
@@ -380,9 +352,7 @@
             border-bottom: 1px solid var(--border);
             color: var(--text-secondary);
         }
-        .posts-table tr:last-child td {
-            border-bottom: none;
-        }
+        .posts-table tr:last-child td { border-bottom: none; }
         .posts-table .platform-badge {
             display: inline-block;
             padding: 2px 10px;
@@ -392,18 +362,10 @@
             background: var(--primary-light);
             color: #fff;
         }
-        .posts-table .platform-badge.ig {
-            background: #E1306C;
-        }
-        .posts-table .platform-badge.fb {
-            background: #1877F2;
-        }
-        .posts-table .platform-badge.tw {
-            background: #1DA1F2;
-        }
-        .posts-table .platform-badge.tt {
-            background: #000;
-        }
+        .posts-table .platform-badge.ig { background: #E1306C; }
+        .posts-table .platform-badge.fb { background: #1877F2; }
+        .posts-table .platform-badge.tw { background: #1DA1F2; }
+        .posts-table .platform-badge.tt { background: #000; }
         .loader-wrap {
             display: flex;
             flex-direction: column;
@@ -420,11 +382,7 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .error-banner {
             background: #FEF2F2;
             color: #991B1B;
@@ -442,113 +400,42 @@
             color: #FCA5A5;
             border-left-color: #DC2626;
         }
-        .error-banner i {
-            font-size: 1.2rem;
-        }
+        .error-banner i { font-size: 1.2rem; }
+
         @media (max-width: 1024px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            .chart-box.full {
-                grid-column: 1;
-            }
+            .charts-grid { grid-template-columns: 1fr; }
+            .chart-box.full { grid-column: 1; }
         }
         @media (max-width: 768px) {
-            body {
-                padding: 12px;
-            }
-            .topbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-                padding: 14px 18px;
-            }
-            .topbar-left {
-                justify-content: center;
-            }
-            .topbar-center {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            .topbar-right {
-                justify-content: center;
-            }
-            .kpi-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-            .kpi-card .value {
-                font-size: 1.2rem;
-            }
-            .brand-grid {
-                grid-template-columns: 1fr;
-            }
-            .brand-card .metrics {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-            .posts-table {
-                font-size: 0.75rem;
-            }
-            .chart-box canvas {
-                max-height: 160px;
-            }
+            body { padding: 12px; }
+            .topbar { flex-direction: column; align-items: stretch; gap: 10px; padding: 14px 18px; }
+            .topbar-left { justify-content: center; }
+            .topbar-center { justify-content: center; flex-wrap: wrap; }
+            .topbar-right { justify-content: center; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .kpi-card .value { font-size: 1.2rem; }
+            .brand-grid { grid-template-columns: 1fr; }
+            .brand-card .metrics { grid-template-columns: 1fr 1fr 1fr; }
+            .posts-table { font-size: 0.75rem; }
+            .chart-box canvas { max-height: 160px; }
         }
         @media (max-width: 480px) {
-            .kpi-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .kpi-card {
-                padding: 14px 16px;
-            }
-            .kpi-card .value {
-                font-size: 1rem;
-            }
-            .kpi-card .icon {
-                display: none;
-            }
-            .topbar-center .badge {
-                display: none;
-            }
+            .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .kpi-card { padding: 14px 16px; }
+            .kpi-card .value { font-size: 1rem; }
+            .kpi-card .icon { display: none; }
+            .topbar-center .badge { display: none; }
         }
         @media print {
-            .topbar-right button {
-                display: none !important;
-            }
-            .kpi-card {
+            .topbar-right button { display: none !important; }
+            .kpi-card, .chart-box, .brand-card, .posts-section {
                 break-inside: avoid;
                 box-shadow: none !important;
                 border: 1px solid #ddd;
             }
-            .chart-box {
-                break-inside: avoid;
-                box-shadow: none !important;
-                border: 1px solid #ddd;
-            }
-            .brand-card {
-                break-inside: avoid;
-                box-shadow: none !important;
-                border: 1px solid #ddd;
-            }
-            .posts-section {
-                box-shadow: none !important;
-                border: 1px solid #ddd;
-            }
-            .app {
-                max-width: 100%;
-            }
-            body {
-                background: #fff !important;
-                color: #000 !important;
-                padding: 10px;
-            }
-            .dark {
-                --bg: #fff !important;
-                --surface: #fff !important;
-                --text: #000 !important;
-                --text-secondary: #333 !important;
-                --border: #ddd !important;
-            }
+            .app { max-width: 100%; }
+            body { background: #fff !important; color: #000 !important; padding: 10px; }
+            .dark { --bg: #fff !important; --surface: #fff !important; --text: #000 !important; --text-secondary: #333 !important; --border: #ddd !important; }
         }
     </style>
 </head>
@@ -620,8 +507,8 @@
     </div>
 
     <script>
+        // ─── YOUR SHEET ID (from the edit link) ──────────────────
         const CONFIG = {
-            // ✅ Your new Sheet ID (from the edit URL)
             sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0',
             tabs: {
                 dashboard: 'Dashboard',
@@ -630,15 +517,17 @@
                 stepforward: 'Step Forward KE',
                 topposts: 'Top Posts'
             },
-            refreshInterval: 60000,
+            refreshInterval: 60000, // 60 seconds
         };
 
+        // ─── STATE ──────────────────────────────────────────────
         let state = {
             data: {},
             charts: {},
             dark: localStorage.getItem('sc-dark') === 'true',
         };
 
+        // ─── DOM refs ───────────────────────────────────────────
         const $ = (s) => document.querySelector(s);
         const $$ = (s) => document.querySelectorAll(s);
 
@@ -660,31 +549,29 @@
             darkToggle: $('#darkToggle'),
         };
 
+        // ─── UTILITIES ──────────────────────────────────────────
         function fmt(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
             if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
             if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
             return n.toFixed(0);
         }
-
         function fmtCurrency(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
             return '$' + n.toFixed(0);
         }
-
         function fmtPct(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
             return n.toFixed(1) + '%';
         }
-
         function dateStr() {
             return new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
         }
-
         function timeStr() {
             return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
 
+        // ─── FETCH FROM GOOGLE SHEETS ──────────────────────────
         async function fetchSheetTab(sheetName) {
             const url =
                 `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -715,6 +602,7 @@
             return results;
         }
 
+        // ─── HELPERS ─────────────────────────────────────────────
         function parseNumber(v) {
             if (typeof v === 'number') return v;
             if (typeof v === 'string') {
@@ -731,13 +619,14 @@
             return row[idx] !== undefined ? row[idx] : null;
         }
 
+        // ─── RENDER DASHBOARD ───────────────────────────────────
         function renderDashboard(data) {
+            // KPI Cards
             const dash = data.dashboard;
-            let kpiRow = null;
             if (dash && dash.rows.length > 0) {
-                kpiRow = dash.rows[dash.rows.length - 1];
+                const lastRow = dash.rows[dash.rows.length - 1];
                 const cols = dash.cols;
-                const get = (name) => parseNumber(getRowVal(kpiRow, name, cols));
+                const get = (name) => parseNumber(getRowVal(lastRow, name, cols));
                 el.kpiReach.textContent = fmt(get('Reach'));
                 el.kpiFollowers.textContent = fmt(get('Followers'));
                 el.kpiEngagement.textContent = fmt(get('Engagement'));
@@ -746,21 +635,16 @@
                 el.kpiEngRate.textContent = fmtPct(get('Engagement Rate'));
             }
 
+            // Brand Summary
             const brands = [
                 { key: 'shunjaaz', label: 'Shunjaaz', color: '#7C3AED' },
                 { key: 'solution', label: 'Solution Center KE', color: '#6366F1' },
                 { key: 'stepforward', label: 'Step Forward KE', color: '#D97706' },
             ];
-
             let brandHTML = '';
             brands.forEach((b) => {
                 const tab = data[b.key];
-                let reach = '—',
-                    followers = '—',
-                    engagement = '—',
-                    growth = '—',
-                    status = 'stable',
-                    statusLabel = 'Stable';
+                let reach = '—', followers = '—', engagement = '—', growth = '—', status = 'stable', statusLabel = 'Stable';
                 if (tab && tab.rows.length > 0) {
                     const last = tab.rows[tab.rows.length - 1];
                     const cols = tab.cols;
@@ -793,6 +677,7 @@
             });
             el.brandGrid.innerHTML = brandHTML;
 
+            // Top Posts
             const posts = data.topposts;
             let postsHTML = '';
             if (posts && posts.rows.length > 0) {
@@ -806,9 +691,9 @@
                     const engagement = fmt(parseNumber(get('Engagement')));
                     const date = get('Date') || '—';
                     const platClass = platform.toLowerCase().includes('insta') ? 'ig' :
-                        platform.toLowerCase().includes('face') ? 'fb' :
-                        platform.toLowerCase().includes('twitt') ? 'tw' :
-                        platform.toLowerCase().includes('tiktok') ? 'tt' : '';
+                                     platform.toLowerCase().includes('face') ? 'fb' :
+                                     platform.toLowerCase().includes('twitt') ? 'tw' :
+                                     platform.toLowerCase().includes('tiktok') ? 'tt' : '';
                     postsHTML += `
                         <tr>
                             <td><span class="platform-badge ${platClass}">${platform}</span></td>
@@ -823,10 +708,12 @@
                 postsHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No posts found</td></tr>`;
             }
             el.postsBody.innerHTML = postsHTML;
+
             el.lastUpdated.textContent = `🔄 ${timeStr()}`;
             buildCharts(data);
         }
 
+        // ─── CHARTS ─────────────────────────────────────────────
         let chartInstances = {};
 
         function buildCharts(data) {
@@ -839,7 +726,6 @@
                 if (idx === -1) return [];
                 return tab.rows.map(r => parseNumber(r[idx]) || 0);
             }
-
             function getColDates(tab) {
                 if (!tab || !tab.rows.length) return [];
                 const idx = tab.cols.indexOf('Date');
@@ -847,6 +733,7 @@
                 return tab.rows.map(r => r[idx] || `Day ${i+1}`);
             }
 
+            // Follower Growth (Line)
             const shun = data.shunjaaz;
             if (shun && shun.rows.length > 1) {
                 const labels = getColDates(shun);
@@ -879,6 +766,7 @@
                 });
             }
 
+            // Reach Comparison (Bar)
             const brandKeys = ['shunjaaz', 'solution', 'stepforward'];
             const reachData = brandKeys.map(k => {
                 const tab = data[k];
@@ -909,6 +797,7 @@
                 }
             });
 
+            // Platform Distribution (Pie)
             const posts = data.topposts;
             let platCounts = {};
             if (posts && posts.rows.length) {
@@ -943,6 +832,7 @@
                 }
             });
 
+            // Monthly Growth (Area)
             const growthTab = data.shunjaaz;
             if (growthTab && growthTab.rows.length > 1) {
                 const labels = getColDates(growthTab);
@@ -987,6 +877,7 @@
             }
         }
 
+        // ─── EXPORT CHARTS ──────────────────────────────────────
         function exportCharts() {
             const canvases = document.querySelectorAll('.chart-box canvas');
             if (!canvases.length) return;
@@ -997,20 +888,20 @@
             link.click();
         }
 
+        // ─── DARK MODE ──────────────────────────────────────────
         function applyDark(dark) {
             document.documentElement.classList.toggle('dark', dark);
             el.darkToggle.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             localStorage.setItem('sc-dark', dark);
             state.dark = dark;
         }
+        el.darkToggle.addEventListener('click', () => { applyDark(!state.dark); });
 
-        el.darkToggle.addEventListener('click', () => {
-            applyDark(!state.dark);
-        });
-
+        // ─── INIT ──────────────────────────────────────────────
         async function init() {
             el.currentDate.textContent = dateStr();
             applyDark(state.dark);
+
             el.loader.style.display = 'flex';
             el.content.style.display = 'none';
             el.errorBanner.style.display = 'none';
@@ -1036,6 +927,7 @@
                 });
             }
 
+            // Auto-refresh
             setInterval(async () => {
                 try {
                     const data = await fetchAllData();
