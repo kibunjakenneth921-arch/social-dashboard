@@ -107,8 +107,8 @@
             dashboard: {
                 cols: ['Date','Reach','Followers','Engagement','DM Leads','Spend','Engagement Rate'],
                 rows: [
-                    ['2026-07-12', 34930, 3859, 6844, 45, 11780, 7.2],   // updated Spend to 11780
-                    ['2026-06-30', 29600, 2580, 5800, 30, 3700, 6.1]
+                    ['2026-07-12', 34930, 3859, 6844, 45, 11700, 7.2],   // Ad Spend = 11700
+                    ['2026-06-30', 29600, 2580, 5800, 30, 11700, 6.1]    // Ad Spend = 11700 (replaced 3700)
                 ]
             },
             shunjaaz: {
@@ -204,7 +204,7 @@
         }
         function fmtCurrency(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
-            return 'Ksh ' + n.toFixed(0);  // changed to Ksh
+            return 'Ksh ' + n.toFixed(0);
         }
         function fmtPct(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
@@ -473,7 +473,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
-        console.log('🚀 Social Media Dashboard – final version with Ksh 11,780');
+        console.log('🚀 Social Media Dashboard – Ad Spend = Ksh 11,700');
     </script>
 </body>
 </html>
