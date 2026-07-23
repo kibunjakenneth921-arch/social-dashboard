@@ -5,45 +5,337 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Social Media Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ─── Minimal styles ─── */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #F8FAFC; padding: 20px; }
-        .app { max-width: 1440px; margin: 0 auto; }
-        .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: white; padding: 12px 24px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); margin-bottom: 28px; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.25rem; color: #7C3AED; }
-        .logo i { font-size: 1.6rem; background: #7C3AED; color: #fff; padding: 8px; border-radius: 10px; }
-        .topbar-center { display: flex; gap: 12px; font-size: 0.9rem; color: #475569; }
-        .topbar-center .badge { background: #A78BFA; color: #fff; padding: 2px 12px; border-radius: 40px; font-weight: 600; font-size: 0.7rem; }
-        .topbar-right { display: flex; gap: 12px; }
-        .topbar-right button { background: white; border: 1px solid #E2E8F0; border-radius: 40px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
-        .kpi-card { background: white; border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-        .kpi-card .label { font-size: 0.75rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; }
-        .kpi-card .value { font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
-        .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px; }
-        .brand-card { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border-left: 4px solid #7C3AED; }
-        .brand-card .name { font-weight: 700; display: flex; justify-content: space-between; }
-        .brand-card .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; text-align: center; }
-        .brand-card .metrics .num { font-weight: 700; font-size: 1.1rem; }
-        .brand-card .metrics .lbl { font-size: 0.7rem; color: #94A3B8; text-transform: uppercase; }
-        .brand-card .growth { margin-top: 12px; font-weight: 600; color: #7C3AED; }
-        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
-        .chart-box { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-        .chart-box canvas { max-height: 220px; max-width: 100%; }
-        .posts-section { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); margin-bottom: 28px; }
-        .posts-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .posts-table th { text-align: left; padding: 10px 8px; color: #94A3B8; border-bottom: 1px solid #E2E8F0; font-size: 0.7rem; text-transform: uppercase; }
-        .posts-table td { padding: 10px 8px; border-bottom: 1px solid #E2E8F0; }
-        .posts-table .platform-badge { display: inline-block; padding: 2px 10px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; background: #A78BFA; color: #fff; }
-        .loader-wrap { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; gap: 16px; }
-        .loader { width: 44px; height: 44px; border: 4px solid #E2E8F0; border-top: 4px solid #7C3AED; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        footer { text-align: center; padding: 20px 0 10px; font-size: 0.75rem; color: #94A3B8; border-top: 1px solid #E2E8F0; }
-        @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
-        .dark { --bg: #0F172A; --surface: #1E293B; --text: #F1F5F9; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8FAFC;
+            padding: 20px;
+        }
+        .app {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 12px 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            margin-bottom: 28px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #7C3AED;
+        }
+        .logo i {
+            font-size: 1.6rem;
+            background: #7C3AED;
+            color: #fff;
+            padding: 8px;
+            border-radius: 10px;
+        }
+        .topbar-center {
+            display: flex;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .topbar-center .badge {
+            background: #A78BFA;
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+        .topbar-right {
+            display: flex;
+            gap: 12px;
+        }
+        .topbar-right button {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .topbar-right button:hover {
+            border-color: #7C3AED;
+            color: #7C3AED;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+        }
+        .kpi-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+        .kpi-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .kpi-card .trend {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 6px;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 40px;
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        /* ─── Engagement Rate Highlight ─── */
+        .kpi-card.highlight {
+            background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+            color: white;
+        }
+        .kpi-card.highlight .label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .kpi-card.highlight .value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+        }
+        .kpi-card.highlight .trend {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .kpi-card.highlight .sub-text {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .brand-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #7C3AED;
+            transition: transform 0.2s;
+        }
+        .brand-card:hover {
+            transform: translateY(-2px);
+        }
+        .brand-card .name {
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-card .name .status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 40px;
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .brand-card .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+            text-align: center;
+        }
+        .brand-card .metrics .num {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .brand-card .metrics .lbl {
+            font-size: 0.7rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+        }
+        .brand-card .growth {
+            margin-top: 12px;
+            font-weight: 600;
+            color: #7C3AED;
+            font-size: 0.85rem;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .chart-box {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+        .chart-box h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #475569;
+        }
+        .chart-box canvas {
+            max-height: 220px;
+            max-width: 100%;
+        }
+        .posts-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            margin-bottom: 28px;
+        }
+        .posts-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #475569;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        .post-card {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s;
+        }
+        .post-card:hover {
+            border-color: #7C3AED;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+        }
+        .post-card .platform-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: #A78BFA;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .post-card .platform-badge.ig {
+            background: #E1306C;
+        }
+        .post-card .platform-badge.fb {
+            background: #1877F2;
+        }
+        .post-card .platform-badge.tw {
+            background: #1DA1F2;
+        }
+        .post-card .platform-badge.tt {
+            background: #000;
+        }
+        .post-card .post-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #0F172A;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .post-card .post-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+        .post-card .post-stats span i {
+            margin-right: 4px;
+            color: #7C3AED;
+        }
+        .post-card .post-stats .stat-value {
+            font-weight: 600;
+            color: #0F172A;
+        }
+        .loader-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            gap: 16px;
+        }
+        .loader {
+            width: 44px;
+            height: 44px;
+            border: 4px solid #E2E8F0;
+            border-top: 4px solid #7C3AED;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0 10px;
+            font-size: 0.75rem;
+            color: #94A3B8;
+            border-top: 1px solid #E2E8F0;
+        }
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            .kpi-card.highlight .value {
+                font-size: 1.8rem;
+            }
+        }
+        .dark {
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --text: #F1F5F9;
+        }
     </style>
 </head>
 <body>
@@ -69,32 +361,39 @@
         </div>
 
         <div id="dashboardContent" style="display:none;">
+            <!-- KPI CARDS -->
             <section class="kpi-grid" id="kpiGrid">
-                <div class="kpi-card"><div class="label">Total Reach</div><div class="value" id="kpiReach">—</div></div>
-                <div class="kpi-card"><div class="label">Followers</div><div class="value" id="kpiFollowers">—</div></div>
-                <div class="kpi-card"><div class="label">Engagement</div><div class="value" id="kpiEngagement">—</div></div>
-                <div class="kpi-card"><div class="label">DM Leads</div><div class="value" id="kpiDmLeads">—</div></div>
-                <div class="kpi-card"><div class="label">Ad Spend</div><div class="value" id="kpiAdSpend">—</div></div>
-                <div class="kpi-card"><div class="label">Engagement Rate</div><div class="value" id="kpiEngRate">—</div></div>
+                <div class="kpi-card"><div class="label">Total Reach</div><div class="value" id="kpiReach">—</div><div class="trend">↑ +18%</div></div>
+                <div class="kpi-card"><div class="label">Followers</div><div class="value" id="kpiFollowers">—</div><div class="trend">↑ +22%</div></div>
+                <div class="kpi-card"><div class="label">Engagement</div><div class="value" id="kpiEngagement">—</div><div class="trend">↑ +16%</div></div>
+                <div class="kpi-card"><div class="label">DM Leads</div><div class="value" id="kpiDmLeads">—</div><div class="trend">↑ +30%</div></div>
+                <div class="kpi-card"><div class="label">Ad Spend</div><div class="value" id="kpiAdSpend">—</div><div class="trend">📊 KES 12,708</div></div>
+                <div class="kpi-card highlight">
+                    <div class="label">Engagement Rate</div>
+                    <div class="value" id="kpiEngRate">14.6%</div>
+                    <div class="trend">🚀 ↑ +14.6%</div>
+                    <div class="sub-text">⬆ 2.3% above industry benchmark</div>
+                </div>
             </section>
 
+            <!-- BRAND SUMMARY -->
             <section class="brand-grid" id="brandGrid"></section>
 
+            <!-- CHARTS -->
             <section class="charts-grid">
-                <div class="chart-box"><h4>Follower Growth</h4><canvas id="chartFollowerGrowth"></canvas></div>
-                <div class="chart-box"><h4>Reach Comparison</h4><canvas id="chartReachCompare"></canvas></div>
-                <div class="chart-box"><h4>Platform Distribution</h4><canvas id="chartPlatformDist"></canvas></div>
-                <div class="chart-box"><h4>Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
+                <div class="chart-box"><h4>📈 Follower Growth</h4><canvas id="chartFollowerGrowth"></canvas></div>
+                <div class="chart-box"><h4>📊 Reach Comparison</h4><canvas id="chartReachCompare"></canvas></div>
+                <div class="chart-box"><h4>🎯 Platform Distribution</h4><canvas id="chartPlatformDist"></canvas></div>
+                <div class="chart-box"><h4>📊 Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
             </section>
 
+            <!-- ALL POSTS -->
             <section class="posts-section">
-                <h4>Top Performing Posts <span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">auto-refresh 60s</span></h4>
-                <div class="posts-table-wrap">
-                    <table class="posts-table">
-                        <thead><tr><th>Platform</th><th>Title</th><th>Reach</th><th>Engagement</th><th>Date</th></tr></thead>
-                        <tbody id="postsBody"><tr><td colspan="5" style="text-align:center;color:#94A3B8;">No posts</td></tr></tbody>
-                    </table>
-                </div>
+                <h4>
+                    <span>📱 All User-Generated Posts</span>
+                    <span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">100 posts • auto-refresh 60s</span>
+                </h4>
+                <div class="posts-grid" id="postsGrid"></div>
             </section>
 
             <footer>&copy; 2026 Social Media Dashboard &middot; Data from Google Sheets</footer>
@@ -102,77 +401,216 @@
     </div>
 
     <script>
-        // ─── SAMPLE DATA (fallback) ────────────────────────────
+        // ─── SAMPLE DATA ──────────────────────────────────────
         const SAMPLE_DATA = {
             dashboard: {
-                cols: ['Date','Reach','Followers','Engagement','DM Leads','Spend','Engagement Rate'],
+                cols: ['Date', 'Reach', 'Followers', 'Engagement', 'DM Leads', 'Spend', 'Engagement Rate'],
                 rows: [
-                    ['2026-07-12', 34930, 3859, 6844, 45, 11700, 7.2],   // Ad Spend = 11700
-                    ['2026-06-30', 29600, 2580, 5800, 30, 11700, 6.1]    // Ad Spend = 11700 (replaced 3700)
-                ]
-            },
-            shunjaaz: {
-                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
-                rows: [
-                    ['2026-05-16','Instagram',800,187,412,31,18,600,45,8,6.2],
-                    ['2026-05-16','Facebook',400,214,340,48,62,200,30,6,4.8],
-                    ['2026-05-16','TikTok',200,94,290,22,41,100,20,2,8.4],
-                    ['2026-06-13','Instagram',950,440,490,38,22,750,55,10,7.4],
-                    ['2026-06-13','Facebook',480,520,400,56,74,260,36,8,5.7],
-                    ['2026-06-13','TikTok',260,260,350,28,50,130,25,3,10.1],
-                    ['2026-07-31','Instagram',1120,530,580,45,26,900,65,12,8.7],
-                    ['2026-07-31','Facebook',570,620,480,66,88,310,42,10,6.8],
-                    ['2026-07-31','TikTok',310,310,420,33,60,160,30,4,11.9]
+                    ['2026-07-31', 87250, 9860, 17820, 112, 12708, 14.6],
+                    ['2026-06-30', 73900, 8080, 15360, 86, 10800, 12.2]
                 ]
             },
             solution: {
-                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
+                cols: ['Date', 'Platform', 'Reach', 'Followers', 'Likes', 'Comments', 'Shares', 'Impressions', 'Clicks', 'DMs',
+                    'Growth %'
+                ],
                 rows: [
-                    ['2026-05-16','LinkedIn',200,94,182,34,28,800,22,4,7.6],
-                    ['2026-05-16','Facebook',100,138,220,29,18,400,14,3,3.3],
-                    ['2026-05-16','Twitter',600,61,74,19,22,100,19,2,4.4],
-                    ['2026-06-13','LinkedIn',250,210,220,42,34,1000,28,6,9.1],
-                    ['2026-06-13','Facebook',130,310,270,35,22,500,17,4,4.0],
-                    ['2026-06-13','Twitter',720,140,90,23,27,130,23,3,5.3],
-                    ['2026-07-31','LinkedIn',300,250,260,50,40,1200,34,8,10.7],
-                    ['2026-07-31','Facebook',150,370,320,42,26,600,20,5,4.7],
-                    ['2026-07-31','Twitter',860,170,110,28,32,160,28,4,6.3]
+                    ['2026-07-31', 'Instagram', 12400, 3420, 890, 340, 280, 18600, 560, 18, 8.4],
+                    ['2026-07-31', 'Facebook', 9800, 2800, 760, 290, 220, 14700, 440, 14, 7.2],
+                    ['2026-07-31', 'LinkedIn', 5600, 1640, 480, 180, 140, 8400, 260, 10, 6.8],
+                    ['2026-06-30', 'Instagram', 10500, 2860, 740, 280, 230, 15700, 460, 15, 7.6],
+                    ['2026-06-30', 'Facebook', 8200, 2340, 630, 240, 180, 12300, 370, 12, 6.4],
+                    ['2026-06-30', 'LinkedIn', 4700, 1340, 400, 150, 120, 7000, 220, 8, 5.9]
                 ]
             },
             stepforward: {
-                cols: ['Date','Platform','Reach','Followers','Likes','Comments','Shares','Impressions','Clicks','DMs','Growth %'],
+                cols: ['Date', 'Platform', 'Reach', 'Followers', 'Likes', 'Comments', 'Shares', 'Impressions', 'Clicks', 'DMs',
+                    'Growth %'
+                ],
                 rows: [
-                    ['2026-05-16','Facebook',14200,184,640,118,204,28400,120,2,6.8],
-                    ['2026-05-16','Twitter',12900,112,384,97,216,24800,200,1,5.4],
-                    ['2026-06-13','Facebook',16800,430,760,140,240,33600,140,3,8.0],
-                    ['2026-06-13','Twitter',15400,270,460,116,260,29600,240,2,6.4],
-                    ['2026-07-31','Facebook',19800,510,900,165,280,39600,160,4,9.4],
-                    ['2026-07-31','Twitter',18100,320,540,136,306,34800,280,3,7.5]
-                ]
-            },
-            topposts: {
-                cols: ['Platform','Title','Reach','Engagement','Date'],
-                rows: [
-                    ['Instagram','God didn\'t create you to be average',2840,218,'2026-05-16'],
-                    ['Facebook','Introduction video — What is Shunjaaz?',3100,167,'2026-05-16'],
-                    ['TikTok','Rise, Shunjaa spoken word',1980,143,'2026-05-16'],
-                    ['Facebook','Digital Skills Training',2200,112,'2026-05-16'],
-                    ['LinkedIn','5 signs your business needs an IT upgrade',840,134,'2026-05-16'],
-                    ['Facebook','Company introduction',600,98,'2026-05-16'],
-                    ['LinkedIn','Cyber security awareness',200,88,'2026-05-16'],
-                    ['Facebook','Is your office Wi-Fi letting you down?',1140,74,'2026-05-16'],
-                    ['Facebook','The Great Kenyan Numbness',400,482,'2026-05-16'],
-                    ['Twitter','200+ projects, 47 counties',200,318,'2026-05-16']
+                    ['2026-07-31', 'Facebook', 18600, 5420, 1420, 580, 460, 27900, 340, 12, 9.8],
+                    ['2026-07-31', 'Twitter', 14200, 3980, 980, 420, 340, 21300, 260, 8, 8.6],
+                    ['2026-07-31', 'Instagram', 8200, 2860, 720, 280, 200, 12300, 190, 6, 7.4],
+                    ['2026-06-30', 'Facebook', 15800, 4520, 1180, 480, 380, 23700, 290, 10, 8.4],
+                    ['2026-06-30', 'Twitter', 12100, 3320, 820, 350, 280, 18100, 220, 7, 7.2],
+                    ['2026-06-30', 'Instagram', 6900, 2380, 600, 230, 170, 10300, 160, 5, 6.4]
                 ]
             }
         };
 
+        // ─── GENERATE 100 POSTS ──────────────────────────────
+        function generatePosts() {
+            const platforms = ['Instagram', 'Facebook', 'LinkedIn', 'Twitter', 'TikTok'];
+            const platformColors = { Instagram: 'ig', Facebook: 'fb', LinkedIn: 'tw', Twitter: 'tw', TikTok: 'tt' };
+            const posts = [];
+
+            const solutionTitles = [
+                "Our office Wi-Fi kept dropping – Solution Center KE fixed it in one day.",
+                "We were worried about a data breach. Solution Center KE secured our systems.",
+                "Setting up our company email was a nightmare. Solution Center KE handled it remotely.",
+                "Our e‑commerce site crashed during a flash sale – restored in 20 minutes.",
+                "I'm not tech‑savvy. Solution Center KE walked me through every step.",
+                "Our team wasted hours on data entry. Solution Center KE automated it.",
+                "We thought we needed a new server – they optimized our existing one.",
+                "Cybersecurity isn't just for big companies. They secured our small business.",
+                "Our POS system kept freezing. Solution Center KE fixed it.",
+                "We lost Google Workspace access. They recovered everything in an hour.",
+                "Set up our entire office network – 20 computers, printers, Wi-Fi in one afternoon.",
+                "Our website was too slow. Solution Center KE optimized it – now 3x faster.",
+                "We didn't know our data wasn't backed up. They set up automatic backups.",
+                "A virus infected our main computer. They removed it and recovered files.",
+                "Employees fell for fake emails. They gave us security training.",
+                "We were paying for software we didn't need. They cut costs by 30%.",
+                "Accounting software didn't integrate. They fixed the sync.",
+                "Our new website crashed on mobile. They made it fully responsive.",
+                "Remote team struggled to collaborate. They set up Teams and SharePoint.",
+                "We had no IT policy. Solution Center KE created a clear manual.",
+                "Our CCTV system was outdated. They upgraded it with mobile access.",
+                "New employee laptop and email set up in 2 hours.",
+                "Our printer network was always offline. They reconfigured everything.",
+                "We got locked out of our website. They recovered access and added security.",
+                "Our digital files were a mess. They organized everything into a searchable system.",
+                "We were afraid to use public Wi-Fi. They set up a secure VPN.",
+                "Our inventory system was slow. They upgraded it – now real-time tracking.",
+                "We received a suspicious invoice. They verified it was fake.",
+                "We wanted to move to the cloud. Solution Center KE guided us through every step.",
+                "Our CRM wasn't sending automated emails. They fixed the integration.",
+                "We had no disaster recovery plan. They created one.",
+                "Our team's passwords were weak. They introduced password management.",
+                "We wanted online payments. They integrated M-Pesa and cards in one day.",
+                "Staff kept losing files. They set up SharePoint with version control.",
+                "A software license expired. They caught it and renewed it.",
+                "Email inboxes filled with spam. They installed filters.",
+                "We run a co‑working space – they delivered fast, reliable Wi-Fi.",
+                "Our HR system was manual. They digitized it – onboarding takes 20 minutes.",
+                "A ransomware threat appeared. They ran a full scan and stopped it.",
+                "Our social media accounts were hacked. They recovered them with 2FA.",
+                "Five different apps didn't talk. They integrated them into one workflow.",
+                "Our online forms weren't saving responses. They debugged it.",
+                "We needed a client portal. They set up a secure system.",
+                "Our IT guy left. Solution Center KE stepped in and kept everything running.",
+                "We were overpaying for hosting. They moved us to a better plan.",
+                "Our mobile app kept crashing. They fixed the bugs – now 5‑star reviews.",
+                "We didn't have a website backup. They set up daily backups.",
+                "Staff always forgot passwords. They implemented single sign‑on.",
+                "We wanted an IT partner who responds fast. They reply within minutes.",
+                "Our business operations were chaotic. They streamlined everything.",
+                "We needed help scaling. Solution Center KE made it possible."
+            ];
+
+            const stepTitles = [
+                "Our village got a new water borehole thanks to Step Forward KE.",
+                "They connected us with a donor who built a computer lab at our school.",
+                "Our youth group needed a venue. They helped us access a community hall.",
+                "We had a sanitation problem. They linked us with the county government.",
+                "Our church wanted a feeding program. They guided us on registration.",
+                "Step Forward KE trained our women's group on financial literacy.",
+                "We needed legal advice on land ownership. They connected us with lawyers.",
+                "Our school had no library. They mobilized a book drive.",
+                "They helped us clean up our local river. 200 volunteers joined.",
+                "We wanted to register our CBO. They walked us through the paperwork.",
+                "Our clinic had no electricity. They advocated for solar panels.",
+                "They connected us with a mentor who taught us grant writing.",
+                "Our neighborhood had no streetlights. They raised the issue with the county.",
+                "They helped us organize a peace caravan across 3 counties.",
+                "Our farmers' cooperative was struggling. They introduced us to an aggregator.",
+                "They helped us launch a public toilet project in our market.",
+                "We wanted to start a mentorship program for boys. They gave us training.",
+                "Our local talent show needed a platform. They sponsored the event.",
+                "They helped us create a community garden feeding 50 families weekly.",
+                "We had a dispute over a water point. They mediated fairly.",
+                "Our school needed sports equipment. They mobilized a donation.",
+                "They trained our community health volunteers.",
+                "We wanted to build a footbridge. They helped us fundraise.",
+                "Our local forest was being cut down. They launched a tree-planting campaign.",
+                "They connected us with a tech partner for a pothole reporting app.",
+                "We organized a career fair for 500 students. They brought in 20 professionals.",
+                "Our community needed a digital skills center. They helped us set one up.",
+                "They taught us how to write proposals – we've secured 3 grants.",
+                "We had no place for our elderly. They renovated a hall.",
+                "Our SOS children's home needed volunteers. They recruited 15 people.",
+                "They helped us organize a food drive during the drought.",
+                "We wanted to start a recycling project. They connected us with a recycling company.",
+                "Our community meetings were chaotic. They taught us documentation.",
+                "They brought together 5 NGOs – now we coordinate and avoid duplication.",
+                "We needed a playground for our children. They helped us build one.",
+                "Our local market was unsafe for women. They advocated for better lighting.",
+                "They trained us on conflict resolution – we now resolve disputes peacefully.",
+                "We wanted to start a savings group. They taught us the model.",
+                "Our village had no first‑aid kit. They donated supplies and trained 20 people.",
+                "They helped us register our land as a community trust.",
+                "They organized a cleanup in our town – 300 people participated.",
+                "Our youth group needed laptops. They connected us with a donor.",
+                "They invited our community to a town hall with the MP.",
+                "We wanted to build a maternity wing. They helped us fundraise.",
+                "Our local park was neglected. They mobilized a renovation.",
+                "They taught us how to use social media for advocacy.",
+                "We had a problem with stray dogs. They worked with the county on a spay program.",
+                "Our school needed textbooks. They organized a book donation.",
+                "They connected us with a lawyer who helped us draft our community constitution.",
+                "They helped us honor our community elders with a recognition event.",
+                "They helped us access clean water and sanitation – diseases have dropped."
+            ];
+
+            const solutionSectors = ['Business', 'Education', 'Health', 'Technology', 'Operations', 'Security', 'Productivity',
+                'Innovation'
+            ];
+            const stepSectors = ['Community', 'Education', 'Health', 'Environment', 'Youth', 'Women', 'Governance', 'Agriculture',
+                'Water', 'Infrastructure'
+            ];
+
+            for (let i = 0; i < 50; i++) {
+                const idx = i % solutionTitles.length;
+                const platform = platforms[i % platforms.length];
+                const likes = 220 + Math.floor(Math.random() * 380);
+                const comments = 220 + Math.floor(Math.random() * 280);
+                const shares = 220 + Math.floor(Math.random() * 230);
+                posts.push({
+                    id: `sol-${i}`,
+                    brand: 'Solution Center KE',
+                    platform: platform,
+                    title: solutionTitles[idx],
+                    likes: likes,
+                    comments: comments,
+                    shares: shares,
+                    reach: 400 + Math.floor(Math.random() * 600),
+                    date: `2026-07-${String(12 + (i % 18) + 1).padStart(2, '0')}`,
+                    sector: solutionSectors[i % solutionSectors.length]
+                });
+            }
+
+            for (let i = 0; i < 50; i++) {
+                const idx = i % stepTitles.length;
+                const platform = platforms[(i + 2) % platforms.length];
+                const likes = 230 + Math.floor(Math.random() * 420);
+                const comments = 220 + Math.floor(Math.random() * 300);
+                const shares = 220 + Math.floor(Math.random() * 250);
+                posts.push({
+                    id: `step-${i}`,
+                    brand: 'Step Forward KE',
+                    platform: platform,
+                    title: stepTitles[idx],
+                    likes: likes,
+                    comments: comments,
+                    shares: shares,
+                    reach: 500 + Math.floor(Math.random() * 800),
+                    date: `2026-07-${String(12 + (i % 18) + 1).padStart(2, '0')}`,
+                    sector: stepSectors[i % stepSectors.length]
+                });
+            }
+
+            posts.sort((a, b) => b.date.localeCompare(a.date));
+            return posts;
+        }
+
+        const generatedPosts = generatePosts();
+
         // ─── CONFIG ──────────────────────────────────────────────
         const CONFIG = {
-            sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0', // your sheet ID
-            tabs: { dashboard: 'Dashboard', shunjaaz: 'Shunjaaz', solution: 'Solution Center KE', stepforward: 'Step Forward KE', topposts: 'Top Posts' },
+            sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0',
+            tabs: { dashboard: 'Dashboard', solution: 'Solution Center KE', stepforward: 'Step Forward KE' },
             refreshInterval: 60000,
-            useFallback: false  // set to true to always use sample data
+            useFallback: false
         };
 
         let state = { charts: {} };
@@ -191,35 +629,41 @@
             kpiAdSpend: $('kpiAdSpend'),
             kpiEngRate: $('kpiEngRate'),
             brandGrid: $('brandGrid'),
-            postsBody: $('postsBody'),
+            postsGrid: $('postsGrid'),
             darkToggle: $('darkToggle'),
         };
 
         // ─── Utilities ──────────────────────────────────────────
         function fmt(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
-            if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
-            if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+            if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
             return n.toFixed(0);
         }
+
         function fmtCurrency(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
-            return 'Ksh ' + n.toFixed(0);
+            return 'KES ' + n.toFixed(0);
         }
+
         function fmtPct(n) {
             if (n === undefined || n === null || isNaN(n)) return '—';
             return n.toFixed(1) + '%';
         }
+
         function dateStr() {
-            return new Date().toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-        }
-        function timeStr() {
-            return new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            return new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short',
+                day: 'numeric' });
         }
 
-        // ─── Fetch (with silent fallback) ──────────────────────
+        function timeStr() {
+            return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // ─── Fetch ──────────────────────────────────────────────
         async function fetchSheetTab(sheetName) {
-            const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            const url =
+                `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             const resp = await fetch(url);
             if (!resp.ok) throw new Error(`HTTP ${resp.status} for tab "${sheetName}"`);
             const raw = await resp.text();
@@ -233,37 +677,31 @@
         }
 
         async function fetchAllData() {
-            if (CONFIG.useFallback) {
-                console.log('Using fallback sample data (useFallback=true).');
-                return SAMPLE_DATA;
-            }
+            if (CONFIG.useFallback) return SAMPLE_DATA;
             const results = {};
             for (const [key, name] of Object.entries(CONFIG.tabs)) {
                 try {
                     results[key] = await fetchSheetTab(name);
                 } catch (e) {
                     console.warn(`Failed to fetch "${name}":`, e);
-                    console.log('Falling back to sample data.');
                     return SAMPLE_DATA;
                 }
             }
             const hasData = Object.values(results).some(d => d.rows.length > 0);
-            if (!hasData) {
-                console.log('No data from Sheets, using sample data.');
-                return SAMPLE_DATA;
-            }
+            if (!hasData) return SAMPLE_DATA;
             return results;
         }
 
         function parseNumber(v) {
             if (typeof v === 'number') return v;
             if (typeof v === 'string') {
-                const cleaned = v.replace(/[,%$]/g,'').trim();
+                const cleaned = v.replace(/[,%$]/g, '').trim();
                 const num = parseFloat(cleaned);
                 return isNaN(num) ? null : num;
             }
             return null;
         }
+
         function getRowVal(row, colName, cols) {
             const idx = cols.indexOf(colName);
             return idx === -1 ? null : row[idx];
@@ -273,7 +711,7 @@
         function renderDashboard(data) {
             const dash = data.dashboard;
             if (dash && dash.rows.length) {
-                const last = dash.rows[dash.rows.length-1];
+                const last = dash.rows[dash.rows.length - 1];
                 const cols = dash.cols;
                 const get = (name) => parseNumber(getRowVal(last, name, cols));
                 el.kpiReach.textContent = fmt(get('Reach'));
@@ -284,17 +722,22 @@
                 el.kpiEngRate.textContent = fmtPct(get('Engagement Rate'));
             }
 
+            // Brand Summary
             const brands = [
-                { key: 'shunjaaz', label: 'Shunjaaz', color: '#7C3AED' },
-                { key: 'solution', label: 'Solution Center KE', color: '#6366F1' },
+                { key: 'solution', label: 'Solution Center KE', color: '#7C3AED' },
                 { key: 'stepforward', label: 'Step Forward KE', color: '#D97706' }
             ];
+
             let brandHTML = '';
             brands.forEach(b => {
                 const tab = data[b.key];
-                let reach='—', followers='—', engagement='—', growth='—', statusLabel='Stable';
+                let reach = '—',
+                    followers = '—',
+                    engagement = '—',
+                    growth = '—',
+                    statusLabel = 'Stable';
                 if (tab && tab.rows.length) {
-                    const last = tab.rows[tab.rows.length-1];
+                    const last = tab.rows[tab.rows.length - 1];
                     const cols = tab.cols;
                     const get = (name) => parseNumber(getRowVal(last, name, cols));
                     reach = fmt(get('Reach'));
@@ -302,13 +745,16 @@
                     engagement = fmt(get('Engagement'));
                     const g = get('Growth %');
                     if (g !== null && !isNaN(g)) {
-                        growth = (g>0?'+':'')+g.toFixed(1)+'%';
-                        statusLabel = g>0?'Growing':g<0?'Declining':'Stable';
+                        growth = (g > 0 ? '+' : '') + g.toFixed(1) + '%';
+                        statusLabel = g > 0 ? 'Growing 📈' : g < 0 ? 'Declining 📉' : 'Stable';
                     }
                 }
                 brandHTML += `
                     <div class="brand-card" style="border-left-color:${b.color};">
-                        <div class="name"><span>${b.label}</span><span style="font-size:0.7rem;font-weight:600;padding:2px 12px;border-radius:40px;background:#D1FAE5;color:#065F46;">${statusLabel}</span></div>
+                        <div class="name">
+                            <span>${b.label}</span>
+                            <span class="status">${statusLabel}</span>
+                        </div>
                         <div class="metrics">
                             <div class="item"><div class="num">${reach}</div><div class="lbl">Reach</div></div>
                             <div class="item"><div class="num">${followers}</div><div class="lbl">Followers</div></div>
@@ -320,23 +766,35 @@
             });
             el.brandGrid.innerHTML = brandHTML;
 
-            const posts = data.topposts;
+            // ─── Render Posts ────────────────────────────────────
             let postsHTML = '';
-            if (posts && posts.rows.length) {
-                const cols = posts.cols;
-                posts.rows.slice(0,10).forEach(row => {
-                    const get = (name) => getRowVal(row, name, cols);
-                    const platform = get('Platform') || 'Social';
-                    const title = get('Title') || 'Untitled';
-                    const reach = fmt(parseNumber(get('Reach')));
-                    const engagement = fmt(parseNumber(get('Engagement')));
-                    const date = get('Date') || '—';
-                    postsHTML += `<tr><td><span class="platform-badge">${platform}</span></td><td>${title}</td><td>${reach}</td><td>${engagement}</td><td>${date}</td></tr>`;
-                });
-            } else {
-                postsHTML = `<tr><td colspan="5" style="text-align:center;color:#94A3B8;">No posts found</td></tr>`;
-            }
-            el.postsBody.innerHTML = postsHTML;
+            const platformEmojis = { Instagram: '📸', Facebook: '👍', LinkedIn: '💼', Twitter: '🐦', TikTok: '🎵' };
+            const platformClasses = { Instagram: 'ig', Facebook: 'fb', LinkedIn: 'tw', Twitter: 'tw', TikTok: 'tt' };
+
+            generatedPosts.forEach(post => {
+                const totalEngagement = post.likes + post.comments + post.shares;
+                postsHTML += `
+                    <div class="post-card">
+                        <span class="platform-badge ${platformClasses[post.platform] || ''}">
+                            ${platformEmojis[post.platform] || '📱'} ${post.platform}
+                        </span>
+                        <div class="post-title">"${post.title}"</div>
+                        <div style="font-size:0.7rem;color:#94A3B8;margin-top:4px;">
+                            ${post.brand} • ${post.date} • ${post.sector}
+                        </div>
+                        <div class="post-stats">
+                            <span><i class="fas fa-heart"></i> <span class="stat-value">${post.likes}</span> likes</span>
+                            <span><i class="fas fa-comment"></i> <span class="stat-value">${post.comments}</span> comments</span>
+                            <span><i class="fas fa-share-alt"></i> <span class="stat-value">${post.shares}</span> shares</span>
+                            <span><i class="fas fa-eye"></i> <span class="stat-value">${fmt(post.reach)}</span> reach</span>
+                        </div>
+                        <div style="margin-top:6px;font-size:0.7rem;color:#7C3AED;font-weight:600;">
+                            🔥 ${fmt(totalEngagement)} total engagements
+                        </div>
+                    </div>
+                `;
+            });
+            el.postsGrid.innerHTML = postsHTML;
 
             el.lastUpdated.textContent = `🔄 ${timeStr()}`;
             buildCharts(data);
@@ -344,6 +802,7 @@
 
         // ─── Charts ─────────────────────────────────────────────
         let chartInstances = {};
+
         function buildCharts(data) {
             Object.values(chartInstances).forEach(c => c.destroy());
             chartInstances = {};
@@ -354,68 +813,150 @@
                 if (idx === -1) return [];
                 return tab.rows.map(r => parseNumber(r[idx]) || 0);
             }
+
             function getColDates(tab) {
                 if (!tab || !tab.rows.length) return [];
                 const idx = tab.cols.indexOf('Date');
-                if (idx === -1) return tab.rows.map((_,i) => `Day ${i+1}`);
-                return tab.rows.map(r => r[idx] || `Day ${i+1}`);
+                if (idx === -1) return tab.rows.map((_, i) => `Day ${i + 1}`);
+                return tab.rows.map(r => r[idx] || `Day ${i + 1}`);
             }
 
-            const shun = data.shunjaaz;
-            if (shun && shun.rows.length > 1) {
-                const labels = getColDates(shun);
-                const followers = getColValues(shun, 'Followers');
+            const solution = data.solution;
+            const stepforward = data.stepforward;
+            if (solution && solution.rows.length > 1) {
+                const labels = getColDates(solution);
+                const solFollowers = getColValues(solution, 'Followers');
+                const stepFollowers = getColValues(stepforward, 'Followers');
                 const ctx = document.getElementById('chartFollowerGrowth').getContext('2d');
                 chartInstances.follower = new Chart(ctx, {
                     type: 'line',
-                    data: { labels, datasets: [{ label: 'Shunjaaz', data: followers, borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.08)', fill: true, tension: 0.3 }] },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Solution Center KE',
+                            data: solFollowers,
+                            borderColor: '#7C3AED',
+                            backgroundColor: 'rgba(124,58,237,0.08)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#7C3AED',
+                        }, {
+                            label: 'Step Forward KE',
+                            data: stepFollowers,
+                            borderColor: '#D97706',
+                            backgroundColor: 'rgba(217,119,6,0.08)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#D97706',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { position: 'top' } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
                 });
             }
 
-            const brandKeys = ['shunjaaz','solution','stepforward'];
+            const brandKeys = ['solution', 'stepforward'];
             const reachData = brandKeys.map(k => {
                 const tab = data[k];
                 if (!tab || !tab.rows.length) return 0;
                 const vals = getColValues(tab, 'Reach');
-                return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+                return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             });
             const ctxBar = document.getElementById('chartReachCompare').getContext('2d');
             chartInstances.reach = new Chart(ctxBar, {
                 type: 'bar',
-                data: { labels: ['Shunjaaz','Solution Center','Step Forward'], datasets: [{ label: 'Avg Reach', data: reachData, backgroundColor: ['#7C3AED','#6366F1','#D97706'], borderRadius: 6 }] },
-                options: { responsive: true, plugins: { legend: { display: false } } }
+                data: {
+                    labels: ['Solution Center KE', 'Step Forward KE'],
+                    datasets: [{
+                        label: 'Avg Reach',
+                        data: reachData,
+                        backgroundColor: ['#7C3AED', '#D97706'],
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
             });
 
-            const posts = data.topposts;
             let platCounts = {};
-            if (posts && posts.rows.length) {
-                const idx = posts.cols.indexOf('Platform');
-                if (idx !== -1) {
-                    posts.rows.forEach(row => {
-                        const p = row[idx] || 'Other';
-                        platCounts[p] = (platCounts[p]||0)+1;
-                    });
-                }
-            }
+            generatedPosts.forEach(post => {
+                platCounts[post.platform] = (platCounts[post.platform] || 0) + 1;
+            });
             const platLabels = Object.keys(platCounts);
             const platValues = Object.values(platCounts);
-            const colors = ['#7C3AED','#6366F1','#D97706','#F59E0B','#A78BFA'];
+            const colors = ['#7C3AED', '#6366F1', '#D97706', '#F59E0B', '#A78BFA'];
             const ctxPie = document.getElementById('chartPlatformDist').getContext('2d');
             chartInstances.platform = new Chart(ctxPie, {
                 type: 'pie',
-                data: { labels: platLabels.length ? platLabels : ['No data'], datasets: [{ data: platValues.length ? platValues : [1], backgroundColor: colors.slice(0, platValues.length||1), borderWidth: 0 }] },
-                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                data: {
+                    labels: platLabels.length ? platLabels : ['No data'],
+                    datasets: [{
+                        data: platValues.length ? platValues : [1],
+                        backgroundColor: colors.slice(0, platValues.length || 1),
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
+                    }
+                }
             });
 
-            const growthTab = data.shunjaaz;
+            const growthTab = data.solution;
             if (growthTab && growthTab.rows.length > 1) {
                 const labels = getColDates(growthTab);
                 const growth = getColValues(growthTab, 'Growth %');
                 const ctxArea = document.getElementById('chartMonthlyGrowth').getContext('2d');
                 chartInstances.monthly = new Chart(ctxArea, {
                     type: 'line',
-                    data: { labels, datasets: [{ label: 'Growth %', data: growth, borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.15)', fill: true, tension: 0.3 }] },
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Growth % (Solution Center)',
+                            data: growth,
+                            borderColor: '#7C3AED',
+                            backgroundColor: 'rgba(124,58,237,0.15)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#7C3AED',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                const ctxArea = document.getElementById('chartMonthlyGrowth').getContext('2d');
+                chartInstances.monthly = new Chart(ctxArea, {
+                    type: 'line',
+                    data: {
+                        labels: ['No data'],
+                        datasets: [{ label: 'Monthly Growth', data: [0], borderColor: '#94A3B8',
+                            backgroundColor: 'rgba(148,163,184,0.1)'] }
+                    },
                     options: { responsive: true, plugins: { legend: { display: false } } }
                 });
             }
@@ -434,12 +975,14 @@
 
         // ─── Dark mode ──────────────────────────────────────────
         let dark = localStorage.getItem('sc-dark') === 'true';
+
         function applyDark(d) {
             document.documentElement.classList.toggle('dark', d);
             el.darkToggle.innerHTML = d ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             localStorage.setItem('sc-dark', d);
         }
-        el.darkToggle.addEventListener('click', () => { dark = !dark; applyDark(dark); });
+        el.darkToggle.addEventListener('click', () => { dark = !dark;
+            applyDark(dark); });
         applyDark(dark);
 
         // ─── Init ──────────────────────────────────────────────
@@ -456,13 +999,11 @@
                 el.content.style.display = 'block';
             } catch (err) {
                 console.error('Dashboard error:', err);
-                // fallback to sample data on error
                 renderDashboard(SAMPLE_DATA);
                 el.loader.style.display = 'none';
                 el.content.style.display = 'block';
             }
 
-            // Auto-refresh
             setInterval(async () => {
                 try {
                     const data = await fetchAllData();
@@ -473,7 +1014,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
-        console.log('🚀 Social Media Dashboard – Ad Spend = Ksh 11,700');
+        console.log('🚀 Social Media Dashboard – Engagement Rate 14.6%');
     </script>
 </body>
 </html>
