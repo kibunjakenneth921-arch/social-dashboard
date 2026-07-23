@@ -62,10 +62,18 @@
         .topbar-center .badge {
             background: #A78BFA;
             color: #fff;
-            padding: 2px 12px;
+            padding: 4px 14px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .topbar-center .badge .clock {
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
         }
         .topbar-right {
             display: flex;
@@ -301,15 +309,6 @@
             font-weight: 600;
         }
 
-        .brand-heading {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0F172A;
-            margin: 24px 0 16px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #7C3AED;
-        }
-
         footer {
             text-align: center;
             padding: 20px 0 10px;
@@ -344,7 +343,7 @@
             </div>
             <div class="topbar-center">
                 <span><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></span>
-                <span class="badge" id="lastUpdated">🔄 Realtime</span>
+                <span class="badge">🔄 <span class="clock" id="realtimeClock">--:--:--</span></span>
             </div>
             <div class="topbar-right">
                 <button onclick="window.print()"><i class="fas fa-print"></i> Print</button>
@@ -950,6 +949,25 @@
         renderPosts(solutionPosts, 'solutionPostsGrid');
         renderPosts(stepPosts, 'stepPostsGrid');
 
+        // ─── Realtime Clock ─────────────────────────────────────
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('realtimeClock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // ─── Date ──────────────────────────────────────────────
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+
         // ─── Charts ─────────────────────────────────────────────
         function getColDates() {
             return ['Jun 30', 'Jul 7', 'Jul 14', 'Jul 21', 'Jul 31'];
@@ -1062,14 +1080,6 @@
             }
         });
 
-        // ─── Date ──────────────────────────────────────────────
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-
         // ─── Export ─────────────────────────────────────────────
         function exportCharts() {
             const canvas = document.querySelector('.chart-box canvas');
@@ -1093,7 +1103,7 @@
             applyDark(dark); });
         applyDark(dark);
 
-        console.log('✅ Dashboard loaded – 100 exact posts, 14.6% engagement, KES 12,708 ad spend');
+        console.log('✅ Dashboard loaded – 100 exact posts, live clock, 14.6% engagement, KES 12,708 ad spend');
     </script>
 </body>
 </html>
