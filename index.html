@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ─── Reset & Base ─── */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -23,6 +24,8 @@
             max-width: 1440px;
             margin: 0 auto;
         }
+
+        /* ─── Topbar ─── */
         .topbar {
             display: flex;
             flex-wrap: wrap;
@@ -81,6 +84,8 @@
             border-color: #7C3AED;
             color: #7C3AED;
         }
+
+        /* ─── KPI Cards ─── */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -128,9 +133,9 @@
             color: rgba(255, 255, 255, 0.8);
         }
         .kpi-card.highlight .value {
-            color: white;
             font-size: 2.2rem;
             font-weight: 800;
+            color: white;
         }
         .kpi-card.highlight .trend {
             background: rgba(255, 255, 255, 0.2);
@@ -141,6 +146,8 @@
             color: rgba(255, 255, 255, 0.7);
             margin-top: 2px;
         }
+
+        /* ─── Brand Summary ─── */
         .brand-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -198,6 +205,8 @@
             color: #7C3AED;
             font-size: 0.85rem;
         }
+
+        /* ─── Charts ─── */
         .charts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -220,6 +229,8 @@
             max-height: 220px;
             max-width: 100%;
         }
+
+        /* ─── Posts Section ─── */
         .posts-section {
             background: white;
             border-radius: 16px;
@@ -289,6 +300,16 @@
             color: #7C3AED;
             font-weight: 600;
         }
+
+        .brand-heading {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 24px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #7C3AED;
+        }
+
         footer {
             text-align: center;
             padding: 20px 0 10px;
@@ -296,6 +317,7 @@
             color: #94A3B8;
             border-top: 1px solid #E2E8F0;
         }
+
         @media (max-width: 768px) {
             .charts-grid {
                 grid-template-columns: 1fr;
@@ -312,19 +334,6 @@
             --surface: #1E293B;
             --text: #F1F5F9;
         }
-        .realtime-clock {
-            font-weight: 600;
-            color: #0F172A;
-            background: #F1F5F9;
-            padding: 2px 10px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            display: inline-block;
-        }
-        .dark .realtime-clock {
-            background: #334155;
-            color: #F1F5F9;
-        }
     </style>
 </head>
 <body>
@@ -335,7 +344,7 @@
             </div>
             <div class="topbar-center">
                 <span><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></span>
-                <span class="badge">⏱️ <span id="realtimeClock" class="realtime-clock"></span></span>
+                <span class="badge" id="lastUpdated">🔄 Realtime</span>
             </div>
             <div class="topbar-right">
                 <button onclick="window.print()"><i class="fas fa-print"></i> Print</button>
@@ -346,7 +355,7 @@
 
         <div id="dashboardContent">
             <!-- KPI CARDS -->
-            <section class="kpi-grid" id="kpiGrid">
+            <section class="kpi-grid">
                 <div class="kpi-card"><div class="label">Total Reach</div><div class="value">87.2K</div><div class="trend">↑ +18%</div></div>
                 <div class="kpi-card"><div class="label">Followers</div><div class="value">9.9K</div><div class="trend">↑ +22%</div></div>
                 <div class="kpi-card"><div class="label">Total Engagement</div><div class="value">17.8K</div><div class="trend">↑ +16%</div></div>
@@ -361,7 +370,7 @@
             </section>
 
             <!-- BRAND SUMMARY -->
-            <section class="brand-grid" id="brandGrid">
+            <section class="brand-grid">
                 <div class="brand-card" style="border-left-color:#7C3AED;">
                     <div class="name"><span>Solution Center KE</span><span class="status">Growing</span></div>
                     <div class="metrics">
@@ -390,13 +399,16 @@
                 <div class="chart-box"><h4>Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
             </section>
 
-            <!-- ALL POSTS -->
+            <!-- POSTS – Solution Center KE -->
             <section class="posts-section">
-                <h4>
-                    <span>User-Generated Posts</span>
-                    <span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">100 posts</span>
-                </h4>
-                <div class="posts-grid" id="postsGrid"></div>
+                <h4><span>Solution Center KE – Posts</span><span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">50 posts</span></h4>
+                <div class="posts-grid" id="solutionPostsGrid"></div>
+            </section>
+
+            <!-- POSTS – Step Forward KE -->
+            <section class="posts-section">
+                <h4><span>Step Forward KE – Posts</span><span style="font-size:0.75rem;font-weight:400;color:#94A3B8;">50 posts</span></h4>
+                <div class="posts-grid" id="stepPostsGrid"></div>
             </section>
 
             <footer>&copy; 2026 Social Media Dashboard</footer>
@@ -404,170 +416,539 @@
     </div>
 
     <script>
-        // ─── EXACT POSTS FROM CLIENT ─────────────────────────────
-
-        // Solution Center KE posts (1–50) – full text including hashtags
+        // ─── EXACT POSTS (Solution Center KE) ──────────────────────────
         const solutionPosts = [
-            "1. Business Operations\nRunning a business is tough enough without operational bottlenecks. Our inventory system was a mess – we couldn't track stock, orders were delayed, and we kept overordering or running out of essentials. Solution Center KE stepped in and streamlined everything. They set up a simple, integrated system that connects our sales, inventory, and suppliers. Now we know exactly what's in stock, what's selling, and when to reorder. In just one month, we've cut wastage by 40% and improved our delivery times dramatically. Our staff is less stressed, and our customers are happier. If you're struggling with operations, please reach out to them – they make business life so much easier. #SolutionCenterKE #BusinessEfficiency #OperationalExcellence #SMEsupport #StreamlineYourBusiness #NairobiBusiness #GrowthMindset #SimplifyOperations #BusinessSolutions #ProductivityHacks",
-            "2. Staff Training\nWe had talented staff, but they lacked confidence using modern tools. We tried training them ourselves, but it was time-consuming and ineffective. Solution Center KE came in and delivered customized, hands-on training sessions. They didn't just show slides – they made our team practice, ask questions, and master the tools we use daily. Now our staff are more productive, make fewer errors, and even suggest improvements we hadn't thought of. The morale boost has been incredible. I honestly didn't expect such a transformation. If you're investing in your team, invest in Solution Center KE – they're worth every penny. #SolutionCenterKE #StaffTraining #TeamDevelopment #WorkplaceSkills #ProfessionalGrowth #EmployeeEmpowerment #CorporateTraining #Upskilling #WorkplaceSuccess #KenyaBusiness",
-            "3. Digital Marketing Support\nOur social media and online presence were non-existent. We knew we needed to be online, but we had no idea where to start. Solution Center KE came in, audited our brand, and built a digital marketing strategy from scratch. They helped us create content, set up ad campaigns, and even taught us how to engage with our audience. Three months later, our followers have tripled, and we're getting leads from platforms we never thought would work for us. It's not magic – it's just good strategy. I'm so grateful we found them. #SolutionCenterKE #DigitalMarketing #SocialMediaStrategy #OnlinePresence #BrandAwareness #LeadGeneration #MarketingSupport #GrowYourBusiness #NairobiDigital #ContentMarketing",
-            "4. Supply Chain Optimization\nOur supply chain was unreliable. Suppliers delivered late, stock got lost, and we had no visibility into what was happening. It was costing us money and clients. Solution Center KE helped us map our entire supply chain, identify bottlenecks, and set up a tracking system. Now we can see exactly where our products are at any time, and suppliers are held accountable. Our delivery times have improved by 50%, and we're saving significant money. This was a game-changer for our business. #SolutionCenterKE #SupplyChainManagement #LogisticsSolutions #BusinessEfficiency #TrackYourSupply #SupplyChainOptimization #NairobiLogistics #SmartBusiness #ReliableDelivery #SupplyChainVisibility",
-            "5. Customer Service Enhancement\nOur customers were frustrated. They'd call, email, or message us, and sometimes it took days to get a response. We were losing clients – and we didn't even know it. Solution Center KE helped us set up a simple customer relationship management (CRM) system and trained our staff on how to respond quickly and professionally. Now we respond within hours, track every interaction, and follow up consistently. Our customer satisfaction scores have skyrocketed. It's amazing what a bit of structure can do. #SolutionCenterKE #CustomerService #CRM #CustomerSatisfaction #ClientRelations #BusinessGrowth #ServiceExcellence #CustomerCare #KenyaBusiness #BuildTrust",
-            "6. Financial Systems\nOur financial tracking was chaotic. We had receipts everywhere, manual spreadsheets, and no clear picture of our cash flow. It was a nightmare during tax season. Solution Center KE came in and set up a simple, automated financial system that tracks income, expenses, and gives us real-time reports. Now we know exactly where our money is going, we budget effectively, and tax time is no longer stressful. I can't recommend this enough – it's the foundation of any successful business. #SolutionCenterKE #FinancialSystems #CashFlowManagement #BusinessFinances #AccountingMadeEasy #TrackYourMoney #FinancialClarity #SMEfinance #NairobiBusiness #MoneyMatters",
-            "7. Logistics Coordination\nWe were running a delivery business but had no way to track our drivers. Vehicles would disappear for hours, and we had no idea if deliveries were completed. Solution Center KE introduced a real-time tracking system that shows us exactly where every vehicle is. Now we can route drivers efficiently, keep customers updated, and reduce fuel costs. Our efficiency has improved by over 30%, and we're making more money with less stress. This service is a lifesaver. #SolutionCenterKE #Logistics #FleetManagement #DeliverySolutions #RealTimeTracking #BusinessEfficiency #NairobiLogistics #TrackYourFleet #SmartDelivery #GrowYourBusiness",
-            "8. Community Projects\nWe wanted to start a community feeding program, but we had no structure – no volunteers, no schedule, no budget. Solution Center KE helped us organize everything. They created a simple plan, helped us recruit volunteers, and even showed us how to manage donations effectively. We've now fed over 200 families, and the program runs smoothly every week. I didn't think we could do it, but with their support, we've made a real difference. #SolutionCenterKE #CommunitySupport #FeedingPrograms #SocialImpact #VolunteerManagement #NGOsKenya #KenyaCares #CommunityDevelopment #MakeADifference #HelpingHands",
-            "9. Health Sector Support\nOur small clinic was struggling with patient records. Everything was on paper, and we kept losing files or mixing up patients. Solution Center KE digitized our entire record system and trained our nurses on how to use it. Now we can access any patient's history in seconds, prescriptions are accurate, and we've cut down on errors. Our patients trust us more, and we're able to provide better care. Thank you, Solution Center KE – you've truly improved our health service. #SolutionCenterKE #Healthcare #PatientRecords #DigitalHealth #ClinicManagement #BetterHealthcare #NairobiHealth #HealthTech #PatientCare #MedicalRecords",
-            "10. Event Management\nWe hosted a community event, but it was chaotic – no agenda, unclear roles, and poor communication. Solution Center KE helped us plan, organize, and execute a professional event. They helped us with the schedule, volunteer coordination, and even suggested creative ideas to keep attendees engaged. The event was a huge success – over 500 people attended, and we received amazing feedback. We couldn't have pulled it off without their guidance. #SolutionCenterKE #EventManagement #CommunityEvents #EventPlanning #SuccessfulEvents #NairobiEvents #KenyaEvents #CommunityEngagement #ProfessionalEvents #PlanToSucceed",
-            "11. Human Resources Support\nWe had no proper HR system. Hiring was messy, onboarding was unstructured, and we had no idea how to manage performance. Solution Center KE came in and set up everything – from recruitment processes to employee handbooks and performance review templates. Now we attract better talent, our employees know what's expected of them, and we're a much happier team. This was the best investment we made in our people. #SolutionCenterKE #HumanResources #HRManagement #EmployeeEngagement #TalentManagement #WorkplaceCulture #NairobiHR #Recruitment #PerformanceManagement #BuildBetterTeams",
-            "12. Social Enterprise Support\nWe run a social enterprise empowering women entrepreneurs. But we were stuck – we needed to scale but didn't know how. Solution Center KE helped us refine our model, create a clear strategy, and even connected us with potential partners. Today we've expanded to 5 new regions and are supporting over 300 women. Their advice was practical, hands-on, and exactly what we needed. #SolutionCenterKE #SocialEnterprise #WomenInBusiness #Empowerment #ScaleUp #NairobiSocialEnterprise #KenyaBusiness #WomenEmpowerment #SupportWomen #SocialImpact",
-            "13. Startups and Innovation\nWe were a startup with a great idea but no structure. We couldn't get funding because our business plan was weak, and our pitch wasn't compelling. Solution Center KE helped us refine our model, create a solid business plan, and build a professional pitch deck. They even coached us on how to present to investors. We just secured our first round of funding – and we couldn't have done it without them. #SolutionCenterKE #Startups #Innovation #BusinessPlan #PitchDeck #Funding #Entrepreneurship #KenyaStartups #NairobiInnovation #InvestmentReady",
-            "14. Agriculture Support\nOur farming cooperative was struggling to manage produce distribution. We'd harvest, but then couldn't sell quickly enough – crops would rot. Solution Center KE helped us set up a simple distribution system, connect with buyers, and even introduced a cold storage solution. We've reduced waste by 60% and are now making more profit. This is what agriculture needs – practical support, not just talk. #SolutionCenterKE #Agriculture #Farming #FoodSecurity #AgriBusiness #FarmersKE #NairobiFarming #SustainableAgri #PostHarvestLoss #AgriSolutions",
-            "15. Education Support\nOur school was struggling with communication. We had no parent portal, no clear way to share updates, and parents constantly complained about lack of information. Solution Center KE set up a simple digital communication platform that connects teachers, parents, and students. Now parents get real-time updates on attendance, grades, and school activities. Communication has improved dramatically, and our school is more transparent and trusted. #SolutionCenterKE #Education #SchoolManagement #ParentCommunication #EdTech #StudentSuccess #NairobiSchools #KenyaEducation #DigitalLearning #ParentEngagement",
-            "16. Environmental Projects\nWe wanted to start a tree-planting campaign, but we had no structure – no plan, no budget, no team. Solution Center KE helped us organize everything. They helped us set goals, recruit volunteers, and even suggested creative fundraising ideas. We've now planted over 1,500 trees across 3 counties. This is just the beginning – and we now know how to plan and execute effectively. #SolutionCenterKE #Environment #TreePlanting #ClimateAction #CommunityGreen #KenyaEnvironment #SustainableFuture #EcoFriendly #NairobiGreen #SaveThePlanet",
-            "17. Real Estate\nOur property management business was disorganized. We had properties spread across the city, and tracking rent, maintenance, and tenant communication was a nightmare. Solution Center KE introduced a property management system that automates rent collection, maintenance requests, and communication. Now we manage everything from our phones. Our tenants are happier, and we're collecting rent on time. #SolutionCenterKE #RealEstate #PropertyManagement #RentalBusiness #TenantRelations #NairobiRealEstate #KenyaProperty #PropertyTech #SmartManagement #RealEstateSolutions",
-            "18. Hospitality Support\nWe run a small hotel, but our booking system was manual and we kept double-booking rooms. Guests would arrive and we'd have to turn them away – losing money and reputation. Solution Center KE introduced an online booking system that integrates with our calendar. Now guests book directly, and we never double-book. Occupancy has improved, and we're getting great reviews. A simple solution that made a huge difference. #SolutionCenterKE #Hospitality #HotelManagement #BookingSystem #GuestExperience #NairobiHotels #KenyaTourism #TravelKenya #HotelTech #GuestSatisfaction",
-            "19. Personal Productivity\nI was overwhelmed – so many tasks, no prioritization, and constant stress. Solution Center KE didn't just help my business; they helped me personally. They introduced me to simple productivity tools and taught me how to use them effectively. Now I organize my day, prioritize tasks, and actually accomplish what matters. I'm less stressed and more productive. I can't thank them enough. #SolutionCenterKE #Productivity #PersonalDevelopment #TimeManagement #WorkSmarter #StressFree #NairobiLife #Efficiency #GrowthMindset #BetterEveryDay",
-            "20. Non-Profit Support\nWe run a non-profit focused on youth empowerment, but we were drowning in admin work – donor reports, project tracking, and volunteer management. Solution Center KE introduced simple systems to manage all of these efficiently. Now we spend less time on admin and more time on our mission. We're more credible to donors, our reports are professional, and we've secured new funding. #SolutionCenterKE #NonProfit #NGOsKenya #YouthEmpowerment #AdminSupport #SocialImpact #NairobiNonProfit #DonorManagement #EffectiveNGOs #MissionDriven",
-            "21. Retail Efficiency\nOur retail store was struggling with inventory theft and stock-outs. We didn't know what was selling and what wasn't. Solution Center KE introduced a simple inventory tracking system with barcodes and analytics. Now we see exactly what sells fast, prevent theft, and never run out of popular items. Our profits have increased, and we're more confident in our business decisions. #SolutionCenterKE #Retail #InventoryManagement #StockControl #NairobiRetail #BusinessGrowth #RetailTech #SmartRetail #KenyaBusiness #Efficiency",
-            "22. Professional Networking\nI was struggling to grow my professional network. I'd attend events, exchange cards, and then nothing. Solution Center KE gave me simple strategies to build meaningful relationships, follow up effectively, and use online platforms to connect. My network has grown significantly, and I've secured new clients and partnerships. Thank you for the guidance. #SolutionCenterKE #Networking #ProfessionalGrowth #Connections #CareerSuccess #NairobiProfessionals #KenyaNetwork #BusinessRelationships #BuildConnections #CareerDevelopment",
-            "23. Crisis Management\nWe had a PR crisis – a mistake went viral, and we were being publicly criticized. We didn't know how to handle it. Solution Center KE helped us manage the situation – crafting a public response, training our team on what to say, and guiding us through the media storm. We survived the crisis and even came out stronger. Their support was invaluable. #SolutionCenterKE #CrisisManagement #PR #ReputationManagement #Communications #NairobiBusiness #KenyaPR #CrisisResolution #BuildTrust #BrandProtection",
-            "24. Innovation and Product Development\nWe had a great product idea, but we didn't know how to bring it to market. Solution Center KE guided us through product development, helped us test prototypes, and even connected us with manufacturers. We're now selling our product across Kenya and we're expanding regionally. They turned our idea into reality. #SolutionCenterKE #Innovation #ProductDevelopment #BringIdeasToLife #Entrepreneurship #KenyaInnovation #NairobiStartups #ProductLaunch #MarketReady #IdeasToImpact",
-            "25. Mental Health Support\nRunning a business can be incredibly stressful. I was burned out and didn't even realize it. Solution Center KE noticed and recommended simple wellness practices, helped me delegate tasks, and supported me in building a healthier work-life balance. I'm now more focused, healthier, and my business is thriving. They don't just fix systems – they care about people. #SolutionCenterKE #MentalHealth #Wellness #WorkLifeBalance #BurnoutRecovery #StressManagement #SelfCare #NairobiLife #HealthyLiving #SupportSystem",
-            "26. Corporate Social Responsibility\nWe wanted to give back to our community but didn't know how to structure our CSR efforts. Solution Center KE helped us design a CSR program aligned with our values, identify causes that matter, and execute projects that truly make a difference. We've now supported schools, orphanages, and environmental projects. Our team is proud to be part of this. #SolutionCenterKE #CSR #CorporateResponsibility #CommunitySupport #GiveBack #KenyaCSR #NairobiCompanies #SocialImpact #PurposeDriven #MakeADifference",
-            "27. Waste Management\nOur apartment complex was struggling with garbage collection – irregular pickups and piles of waste. Solution Center KE connected us with efficient waste management providers and helped us set up recycling systems. Now our compound is clean, we reduce waste, and we even earn from selling recyclables. It's a win-win. #SolutionCenterKE #WasteManagement #Recycling #CleanLiving #SustainableLiving #NairobiHomes #KenyaEnvironment #ZeroWaste #GreenLiving #BetterCommunities",
-            "28. Youth Mentorship\nI'm a young entrepreneur, and I didn't have anyone to guide me. Solution Center KE paired me with a mentor who taught me business basics, helped me avoid costly mistakes, and encouraged me to keep going. I've now launched my business, and I'm profitable. Mentorship matters – and Solution Center KE made it happen. #SolutionCenterKE #YouthMentorship #Entrepreneurship #YoungBusiness #MentorshipMatters #KenyaYouth #NairobiYoungEntrepreneurs #Guidance #Support #DreamBig",
-            "29. Tourism Support\nOur travel agency was struggling with bookings – manual processes, missed opportunities, and poor customer follow-up. Solution Center KE introduced a digital booking system and trained our team on customer engagement. Now our bookings are automated, we follow up consistently, and our clients come back. Tourism has rebounded, and we're ready for the next wave. #SolutionCenterKE #Tourism #TravelAgency #Bookings #CustomerExperience #KenyaTourism #NairobiTravel #TravelKenya #DigitalTourism #ExploreKenya",
-            "30. Religious Institutions\nOur church was having trouble managing its members and activities – no clear records, chaotic events, and poor communication. Solution Center KE helped us set up a simple member management system, calendar, and communication tools. Now we know who's part of our community, we plan events effectively, and everyone stays informed. This has transformed our church. #SolutionCenterKE #ChurchManagement #ReligiousInstitutions #CommunityFaith #KenyaChurches #NairobiFaith #MemberManagement #ChurchGrowth #CommunityBuilding #FaithInAction",
-            "31. Sports Management\nWe run a local football club, but we had no structure – no proper schedules, no clear roles, and players would show up late or not at all. Solution Center KE helped us organize everything – training schedules, match coordination, and even player management. Now we're more disciplined, winning more games, and our players are happier. #SolutionCenterKE #SportsManagement #FootballClub #TeamOrganization #NairobiSports #KenyaFootball #SportsDevelopment #TeamSpirit #Discipline #GameOn",
-            "32. Coaching and Consulting\nI'm a coach, and I needed help structuring my programs and reaching more clients. Solution Center KE helped me refine my offerings, create a marketing strategy, and even built a simple website. I've now doubled my client base, and my programs are more impactful. They didn't just give advice – they made things happen. #SolutionCenterKE #Coaching #Consulting #ProfessionalDevelopment #KenyaCoaches #NairobiConsulting #Growth #ScaleYourBusiness #CoachLife #MakeAnImpact",
-            "33. Art and Creative Industries\nI'm a visual artist, and I had no idea how to sell my work online. Solution Center KE helped me set up a portfolio website, connected me with galleries, and even taught me how to use social media to reach buyers. I've sold more pieces in the last 6 months than in the previous 3 years. This is a dream come true. #SolutionCenterKE #Art #CreativeIndustry #VisualArt #KenyaArtists #NairobiArt #SellYourArt #CreativeEntrepreneurship #SupportArt #ArtCommunity",
-            "34. Logistics for SMEs\nWe're an SME delivering products across Nairobi, and we had no reliable way to manage our deliveries. Solution Center KE introduced a simple dispatch tracking system that we can monitor from our phones. Now we know where each rider is, clients get real-time updates, and we deliver faster. We're saving time and money, and we're known for our reliability. #SolutionCenterKE #SME #Logistics #NairobiDelivery #BusinessEfficiency #TrackYourDeliveries #ReliableService #KenyaLogistics #SMEsupport #FastDelivery",
-            "35. Fundraising and Grant Writing\nWe needed funding for our community project, but our grant applications were weak and often rejected. Solution Center KE helped us improve our grant writing skills, identify the right funding opportunities, and present our case compellingly. We've now secured three grants, and our project is fully funded. They turned our frustration into success. #SolutionCenterKE #Fundraising #GrantWriting #CommunityProjects #NonProfit #KenyaNGOs #NairobiFunding #ProjectFunding #MakeADifference #SocialImpact",
-            "36. Personal Finance\nI was struggling to manage my personal finances – no budget, no savings, and constantly stressed about money. Solution Center KE introduced me to simple financial planning tools and taught me how to budget effectively. I now have savings, I've paid off debt, and I'm more confident about the future. This isn't just business advice – it's life-changing. #SolutionCenterKE #PersonalFinance #FinancialPlanning #Budgeting #Savings #MoneyManagement #NairobiFinance #FinancialFreedom #SmartMoney #LifeSkills",
-            "37. Project Management\nWe had great ideas, but we couldn't execute them. Projects would stall, deadlines would pass, and team members would lose motivation. Solution Center KE introduced simple project management tools and taught us how to use them effectively. Now we plan, track, and deliver on time. Our team is more focused, and we're finally achieving our goals. #SolutionCenterKE #ProjectManagement #Execution #TeamWork #NairobiProjects #KenyaBusiness #GoalSetting #OnTimeDelivery #Productivity #ProjectSuccess",
-            "38. Creative Problem-Solving\nWe faced a complex challenge that seemed impossible to solve. Solution Center KE didn't give us a quick fix – they helped us think differently, explore new solutions, and implement creative approaches. We solved the problem and built a framework for future challenges. Their approach to problem-solving is something we now apply to everything we do. #SolutionCenterKE #ProblemSolving #CreativeThinking #Innovation #NairobiInnovation #KenyaBusiness #ThinkDifferent #SolutionsMindset #OvercomeChallenges #GrowthMindset",
-            "39. Infrastructure and Development\nOur community was struggling with infrastructure challenges – poor roads, no drainage, and limited access to clean water. Solution Center KE connected us with government agencies and helped us advocate effectively. We're now seeing real progress – roads are being fixed, and drainage is being installed. This is development in action. #SolutionCenterKE #Infrastructure #CommunityDevelopment #NairobiInfrastructure #KenyaDevelopment #RoadsAndDrainage #WaterForAll #CommunityAdvocacy #BuildingCommunities #Progress",
-            "40. Solar Energy Solutions\nWe were paying high electricity bills and wanted to switch to solar, but we didn't know where to start. Solution Center KE connected us with reliable solar providers, helped us understand the investment, and even negotiated better prices. We've now installed solar panels, cut our electricity costs by 70%, and we're doing our part for the environment. #SolutionCenterKE #SolarEnergy #RenewableEnergy #GoGreen #NairobiSolar #KenyaEnergy #SustainableLiving #LowerCosts #CleanEnergy #GreenKenya",
-            "41. Public Speaking and Communication\nI was terrified of public speaking, and it was holding my career back. Solution Center KE connected me with a communication coach who taught me practical techniques to build confidence, structure my presentations, and engage audiences. I now speak at conferences and lead meetings with confidence. This has completely transformed my professional life. #SolutionCenterKE #PublicSpeaking #CommunicationSkills #Confidence #CareerGrowth #NairobiSpeakers #KenyaProfessionals #PresentationSkills #SpeakWithConfidence #PersonalDevelopment",
-            "42. Team Building and Culture\nOur team morale was low – no collaboration, no trust, and constant conflicts. Solution Center KE helped us rebuild our team culture through workshops, activities, and facilitated conversations. We've built a more cohesive, supportive team that communicates openly and works together. Morale is high, and our results are improving. #SolutionCenterKE #TeamBuilding #CompanyCulture #WorkplaceMorale #Collaboration #NairobiTeams #KenyaWorkplaces #TrustBuilding #HappyTeams #BetterTogether",
-            "43. eCommerce and Online Selling\nWe had products to sell, but our online store wasn't performing – no traffic, no sales. Solution Center KE audited our store, improved the user experience, helped us with product descriptions, and integrated better payment systems. Now our sales are increasing, and we're building a loyal online customer base. The potential is huge. #SolutionCenterKE #eCommerce #OnlineSelling #DigitalBusiness #NairobiOnline #KenyaBusiness #ShopOnline #CustomerExperience #IncreaseSales #DigitalCommerce",
-            "44. Mentorship Programs\nI wanted to start a mentorship program for young professionals, but I didn't know how to structure it or attract participants. Solution Center KE helped me design the program, recruit mentors, and create a framework that ensures real impact. We now have 50 mentors guiding 200 young professionals across multiple sectors. #SolutionCenterKE #Mentorship #YoungProfessionals #CareerGuidance #KenyaYouth #NairobiMentors #Empowerment #FutureLeaders #ProfessionalDevelopment #Impact",
-            "45. Artisan and Craft Support\nWe're a group of artisans making handmade crafts, but we had no market beyond our local area. Solution Center KE connected us with online platforms, taught us product photography, and helped us with packaging. Now we're selling to customers across Kenya and even exporting. Our business has grown beyond our wildest dreams. #SolutionCenterKE #Artisan #Crafts #Handmade #KenyaCrafts #NairobiArtisans #SupportLocal #MadeInKenya #ArtisanBusiness #ExportReady",
-            "46. Community Health\nOur community health program was struggling to reach people in remote areas. Solution Center KE helped us leverage mobile technology to send health reminders and information via SMS. Now we reach thousands more people, and health outcomes are improving. This is public health at scale. #SolutionCenterKE #CommunityHealth #PublicHealth #HealthTech #KenyaHealth #NairobiHealth #MobileHealth #SMSAlerts #HealthForAll #CommunityWellness",
-            "47. Environmental Conservation\nWe wanted to start a conservation project in our local forest, but we didn't have a plan, resources, or team. Solution Center KE helped us organize, fundraise, and recruit volunteers. We've now restored 5 hectares of forest, and we're seeing wildlife return. Conservation is possible when you have the right support. #SolutionCenterKE #Conservation #EnvironmentalProtection #ForestRestoration #Wildlife #KenyaEnvironment #NairobiConservation #ProtectNature #GreenKenya #SaveOurForests",
-            "48. Parenting Support\nI'm a working parent, and I was struggling to balance career and family. Solution Center KE introduced me to time management techniques, flexible work arrangements, and self-care practices that helped me be more present with my children. My family is happier, and I'm more effective at work. This support has changed my life. #SolutionCenterKE #Parenting #WorkLifeBalance #FamilyFirst #NairobiParents #KenyaFamilies #TimeManagement #SelfCare #HappyParenting #FamilySupport",
-            "49. Sports Development\nWe wanted to develop a sports academy for underprivileged youth, but we had no facilities, coaching, or equipment. Solution Center KE connected us with donors, helped us find a venue, and even recruited volunteer coaches. We now have 120 young athletes training regularly – and some are winning national competitions. #SolutionCenterKE #SportsAcademy #YouthSports #KenyaAthletes #NairobiSports #SportsDevelopment #TeamSports #EmpowerYouth #DreamBig #SportForChange",
-            "50. Personal Branding\nI had no online presence, and my professional reputation was invisible. Solution Center KE helped me build a personal brand – from a professional website to LinkedIn optimization and content strategy. Now I'm known as an expert in my field, I receive speaking invitations, and I'm attracting new opportunities. Your brand is your future. #SolutionCenterKE #PersonalBranding #ProfessionalPresence #CareerGrowth #NairobiProfessionals #KenyaCareers #BuildYourBrand #OnlineReputation #Leadership #Visibility"
+            `1. Business Operations
+            Running a business is tough enough without operational bottlenecks. Our inventory system was a mess – we couldn't track stock, orders were delayed, and we kept overordering or running out of essentials. Solution Center KE stepped in and streamlined everything. They set up a simple, integrated system that connects our sales, inventory, and suppliers. Now we know exactly what's in stock, what's selling, and when to reorder. In just one month, we've cut wastage by 40% and improved our delivery times dramatically. Our staff is less stressed, and our customers are happier. If you're struggling with operations, please reach out to them – they make business life so much easier.
+
+            💬 Question for you: What's the biggest operational challenge your business faces? Drop it in the comments – let's help each other! 👇 #SolutionCenterKE #BusinessEfficiency #OperationalExcellence #SMEsupport #StreamlineYourBusiness #NairobiBusiness #GrowthMindset #SimplifyOperations #BusinessSolutions #ProductivityHacks`,
+
+            `2. Staff Training
+            We had talented staff, but they lacked confidence using modern tools. We tried training them ourselves, but it was time-consuming and ineffective. Solution Center KE came in and delivered customized, hands-on training sessions. They didn't just show slides – they made our team practice, ask questions, and master the tools we use daily. Now our staff are more productive, make fewer errors, and even suggest improvements we hadn't thought of. The morale boost has been incredible. I honestly didn't expect such a transformation. If you're investing in your team, invest in Solution Center KE – they're worth every penny.
+
+            💬 Poll: How often do you train your staff? Weekly, Monthly, or Quarterly? Vote below! ⬇️ #SolutionCenterKE #StaffTraining #TeamDevelopment #WorkplaceSkills #ProfessionalGrowth #EmployeeEmpowerment #CorporateTraining #Upskilling #WorkplaceSuccess #KenyaBusiness`,
+
+            `3. Digital Marketing Support
+            Our social media and online presence were non-existent. We knew we needed to be online, but we had no idea where to start. Solution Center KE came in, audited our brand, and built a digital marketing strategy from scratch. They helped us create content, set up ad campaigns, and even taught us how to engage with our audience. Three months later, our followers have tripled, and we're getting leads from platforms we never thought would work for us. It's not magic – it's just good strategy. I'm so grateful we found them.
+
+            💬 Question: What platform brings you the most business? Tell us in the comments – we'd love to learn! 📱 #SolutionCenterKE #DigitalMarketing #SocialMediaStrategy #OnlinePresence #BrandAwareness #LeadGeneration #MarketingSupport #GrowYourBusiness #NairobiDigital #ContentMarketing`,
+
+            `4. Supply Chain Optimization
+            Our supply chain was unreliable. Suppliers delivered late, stock got lost, and we had no visibility into what was happening. It was costing us money and clients. Solution Center KE helped us map our entire supply chain, identify bottlenecks, and set up a tracking system. Now we can see exactly where our products are at any time, and suppliers are held accountable. Our delivery times have improved by 50%, and we're saving significant money. This was a game-changer for our business.
+
+            💬 Question: What's your biggest supply chain headache? Share your story below – you're not alone! 📦 #SolutionCenterKE #SupplyChainManagement #LogisticsSolutions #BusinessEfficiency #TrackYourSupply #SupplyChainOptimization #NairobiLogistics #SmartBusiness #ReliableDelivery #SupplyChainVisibility`,
+
+            `5. Customer Service Enhancement
+            Our customers were frustrated. They'd call, email, or message us, and sometimes it took days to get a response. We were losing clients – and we didn't even know it. Solution Center KE helped us set up a simple customer relationship management (CRM) system and trained our staff on how to respond quickly and professionally. Now we respond within hours, track every interaction, and follow up consistently. Our customer satisfaction scores have skyrocketed. It's amazing what a bit of structure can do.
+
+            💬 Poll: How quickly do you respond to customer inquiries? Under 1 hour, 1-4 hours, or 1 day? Vote! ⏰ #SolutionCenterKE #CustomerService #CRM #CustomerSatisfaction #ClientRelations #BusinessGrowth #ServiceExcellence #CustomerCare #KenyaBusiness #BuildTrust`,
+
+            `6. Financial Systems
+            Our financial tracking was chaotic. We had receipts everywhere, manual spreadsheets, and no clear picture of our cash flow. It was a nightmare during tax season. Solution Center KE came in and set up a simple, automated financial system that tracks income, expenses, and gives us real-time reports. Now we know exactly where our money is going, we budget effectively, and tax time is no longer stressful. I can't recommend this enough – it's the foundation of any successful business.
+
+            💬 Question: What's your biggest financial challenge? Let's share tips and support each other! 💰 #SolutionCenterKE #FinancialSystems #CashFlowManagement #BusinessFinances #AccountingMadeEasy #TrackYourMoney #FinancialClarity #SMEfinance #NairobiBusiness #MoneyMatters`,
+
+            `7. Logistics Coordination
+            We were running a delivery business but had no way to track our drivers. Vehicles would disappear for hours, and we had no idea if deliveries were completed. Solution Center KE introduced a real-time tracking system that shows us exactly where every vehicle is. Now we can route drivers efficiently, keep customers updated, and reduce fuel costs. Our efficiency has improved by over 30%, and we're making more money with less stress. This service is a lifesaver.
+
+            💬 Question: How do you track your fleet or deliveries? Share your methods below! 🚚 #SolutionCenterKE #Logistics #FleetManagement #DeliverySolutions #RealTimeTracking #BusinessEfficiency #NairobiLogistics #TrackYourFleet #SmartDelivery #GrowYourBusiness`,
+
+            `8. Community Projects
+            We wanted to start a community feeding program, but we had no structure – no volunteers, no schedule, no budget. Solution Center KE helped us organize everything. They created a simple plan, helped us recruit volunteers, and even showed us how to manage donations effectively. We've now fed over 200 families, and the program runs smoothly every week. I didn't think we could do it, but with their support, we've made a real difference.
+
+            💬 Question: What community project are you passionate about? Tell us in the comments – we want to support you! 🤝 #SolutionCenterKE #CommunitySupport #FeedingPrograms #SocialImpact #VolunteerManagement #NGOsKenya #KenyaCares #CommunityDevelopment #MakeADifference #HelpingHands`,
+
+            `9. Health Sector Support
+            Our small clinic was struggling with patient records. Everything was on paper, and we kept losing files or mixing up patients. Solution Center KE digitized our entire record system and trained our nurses on how to use it. Now we can access any patient's history in seconds, prescriptions are accurate, and we've cut down on errors. Our patients trust us more, and we're able to provide better care. Thank you, Solution Center KE – you've truly improved our health service.
+
+            💬 Question: What's one thing that would improve healthcare in your community? Share your thoughts! 🏥 #SolutionCenterKE #Healthcare #PatientRecords #DigitalHealth #ClinicManagement #BetterHealthcare #NairobiHealth #HealthTech #PatientCare #MedicalRecords`,
+
+            `10. Event Management
+            We hosted a community event, but it was chaotic – no agenda, unclear roles, and poor communication. Solution Center KE helped us plan, organize, and execute a professional event. They helped us with the schedule, volunteer coordination, and even suggested creative ideas to keep attendees engaged. The event was a huge success – over 500 people attended, and we received amazing feedback. We couldn't have pulled it off without their guidance.
+
+            💬 Question: What's the best event you've ever attended? Tell us what made it special! 🎉 #SolutionCenterKE #EventManagement #CommunityEvents #EventPlanning #SuccessfulEvents #NairobiEvents #KenyaEvents #CommunityEngagement #ProfessionalEvents #PlanToSucceed`,
+
+            `11. Human Resources Support
+            We had no proper HR system. Hiring was messy, onboarding was unstructured, and we had no idea how to manage performance. Solution Center KE came in and set up everything – from recruitment processes to employee handbooks and performance review templates. Now we attract better talent, our employees know what's expected of them, and we're a much happier team. This was the best investment we made in our people.
+
+            💬 Poll: What's most important to you in a workplace? Salary, Culture, or Growth? Vote! 👇 #SolutionCenterKE #HumanResources #HRManagement #EmployeeEngagement #TalentManagement #WorkplaceCulture #NairobiHR #Recruitment #PerformanceManagement #BuildBetterTeams`,
+
+            `12. Social Enterprise Support
+            We run a social enterprise empowering women entrepreneurs. But we were stuck – we needed to scale but didn't know how. Solution Center KE helped us refine our model, create a clear strategy, and even connected us with potential partners. Today we've expanded to 5 new regions and are supporting over 300 women. Their advice was practical, hands-on, and exactly what we needed.
+
+            💬 Question: Know a woman entrepreneur who inspires you? Tag her below and celebrate her! 👩‍💼 #SolutionCenterKE #SocialEnterprise #WomenInBusiness #Empowerment #ScaleUp #NairobiSocialEnterprise #KenyaBusiness #WomenEmpowerment #SupportWomen #SocialImpact`,
+
+            `13. Startups and Innovation
+            We were a startup with a great idea but no structure. We couldn't get funding because our business plan was weak, and our pitch wasn't compelling. Solution Center KE helped us refine our model, create a solid business plan, and build a professional pitch deck. They even coached us on how to present to investors. We just secured our first round of funding – and we couldn't have done it without them.
+
+            💬 Question: What's the biggest challenge facing startups in Kenya? Share your perspective! 🚀 #SolutionCenterKE #Startups #Innovation #BusinessPlan #PitchDeck #Funding #Entrepreneurship #KenyaStartups #NairobiInnovation #InvestmentReady`,
+
+            `14. Agriculture Support
+            Our farming cooperative was struggling to manage produce distribution. We'd harvest, but then couldn't sell quickly enough – crops would rot. Solution Center KE helped us set up a simple distribution system, connect with buyers, and even introduced a cold storage solution. We've reduced waste by 60% and are now making more profit. This is what agriculture needs – practical support, not just talk.
+
+            💬 Question: What's the biggest challenge facing farmers in your area? Let's discuss solutions! 🌾 #SolutionCenterKE #Agriculture #Farming #FoodSecurity #AgriBusiness #FarmersKE #NairobiFarming #SustainableAgri #PostHarvestLoss #AgriSolutions`,
+
+            `15. Education Support
+            Our school was struggling with communication. We had no parent portal, no clear way to share updates, and parents constantly complained about lack of information. Solution Center KE set up a simple digital communication platform that connects teachers, parents, and students. Now parents get real-time updates on attendance, grades, and school activities. Communication has improved dramatically, and our school is more transparent and trusted.
+
+            💬 Question: How involved are parents in your children's education? Share your experience! 📚 #SolutionCenterKE #Education #SchoolManagement #ParentCommunication #EdTech #StudentSuccess #NairobiSchools #KenyaEducation #DigitalLearning #ParentEngagement`,
+
+            `16. Environmental Projects
+            We wanted to start a tree-planting campaign, but we had no structure – no plan, no budget, no team. Solution Center KE helped us organize everything. They helped us set goals, recruit volunteers, and even suggested creative fundraising ideas. We've now planted over 1,500 trees across 3 counties. This is just the beginning – and we now know how to plan and execute effectively.
+
+            💬 Question: Have you ever planted a tree? Share a photo or story below! 🌳 #SolutionCenterKE #Environment #TreePlanting #ClimateAction #CommunityGreen #KenyaEnvironment #SustainableFuture #EcoFriendly #NairobiGreen #SaveThePlanet`,
+
+            `17. Real Estate
+            Our property management business was disorganized. We had properties spread across the city, and tracking rent, maintenance, and tenant communication was a nightmare. Solution Center KE introduced a property management system that automates rent collection, maintenance requests, and communication. Now we manage everything from our phones. Our tenants are happier, and we're collecting rent on time.
+
+            💬 Question: What's the hardest part of managing property? Share your tips! 🏠 #SolutionCenterKE #RealEstate #PropertyManagement #RentalBusiness #TenantRelations #NairobiRealEstate #KenyaProperty #PropertyTech #SmartManagement #RealEstateSolutions`,
+
+            `18. Hospitality Support
+            We run a small hotel, but our booking system was manual and we kept double-booking rooms. Guests would arrive and we'd have to turn them away – losing money and reputation. Solution Center KE introduced an online booking system that integrates with our calendar. Now guests book directly, and we never double-book. Occupancy has improved, and we're getting great reviews. A simple solution that made a huge difference.
+
+            💬 Question: What makes a hotel stay memorable for you? Share your best experience! 🏨 #SolutionCenterKE #Hospitality #HotelManagement #BookingSystem #GuestExperience #NairobiHotels #KenyaTourism #TravelKenya #HotelTech #GuestSatisfaction`,
+
+            `19. Personal Productivity
+            I was overwhelmed – so many tasks, no prioritization, and constant stress. Solution Center KE didn't just help my business; they helped me personally. They introduced me to simple productivity tools and taught me how to use them effectively. Now I organize my day, prioritize tasks, and actually accomplish what matters. I'm less stressed and more productive. I can't thank them enough.
+
+            💬 Poll: What time of day are you most productive? Morning, Afternoon, or Night? Vote! ⏰ #SolutionCenterKE #Productivity #PersonalDevelopment #TimeManagement #WorkSmarter #StressFree #NairobiLife #Efficiency #GrowthMindset #BetterEveryDay`,
+
+            `20. Non-Profit Support
+            We run a non-profit focused on youth empowerment, but we were drowning in admin work – donor reports, project tracking, and volunteer management. Solution Center KE introduced simple systems to manage all of these efficiently. Now we spend less time on admin and more time on our mission. We're more credible to donors, our reports are professional, and we've secured new funding.
+
+            💬 Question: What's the biggest challenge for non-profits in Kenya? Let's discuss solutions! ❤️ #SolutionCenterKE #NonProfit #NGOsKenya #YouthEmpowerment #AdminSupport #SocialImpact #NairobiNonProfit #DonorManagement #EffectiveNGOs #MissionDriven`,
+
+            `21. Retail Efficiency
+            Our retail store was struggling with inventory theft and stock-outs. We didn't know what was selling and what wasn't. Solution Center KE introduced a simple inventory tracking system with barcodes and analytics. Now we see exactly what sells fast, prevent theft, and never run out of popular items. Our profits have increased, and we're more confident in our business decisions.
+
+            💬 Question: What's your favorite retail store in Nairobi and why? Share below! 🛍️ #SolutionCenterKE #Retail #InventoryManagement #StockControl #NairobiRetail #BusinessGrowth #RetailTech #SmartRetail #KenyaBusiness #Efficiency`,
+
+            `22. Professional Networking
+            I was struggling to grow my professional network. I'd attend events, exchange cards, and then nothing. Solution Center KE gave me simple strategies to build meaningful relationships, follow up effectively, and use online platforms to connect. My network has grown significantly, and I've secured new clients and partnerships. Thank you for the guidance.
+
+            💬 Question: What's your best networking tip? Share it with our community! 🤝 #SolutionCenterKE #Networking #ProfessionalGrowth #Connections #CareerSuccess #NairobiProfessionals #KenyaNetwork #BusinessRelationships #BuildConnections #CareerDevelopment`,
+
+            `23. Crisis Management
+            We had a PR crisis – a mistake went viral, and we were being publicly criticized. We didn't know how to handle it. Solution Center KE helped us manage the situation – crafting a public response, training our team on what to say, and guiding us through the media storm. We survived the crisis and even came out stronger. Their support was invaluable.
+
+            💬 Question: Have you ever faced a PR crisis? How did you handle it? Share your story! 📰 #SolutionCenterKE #CrisisManagement #PR #ReputationManagement #Communications #NairobiBusiness #KenyaPR #CrisisResolution #BuildTrust #BrandProtection`,
+
+            `24. Innovation and Product Development
+            We had a great product idea, but we didn't know how to bring it to market. Solution Center KE guided us through product development, helped us test prototypes, and even connected us with manufacturers. We're now selling our product across Kenya and we're expanding regionally. They turned our idea into reality.
+
+            💬 Question: What product or service do you wish existed in Kenya? Share your idea! 💡 #SolutionCenterKE #Innovation #ProductDevelopment #BringIdeasToLife #Entrepreneurship #KenyaInnovation #NairobiStartups #ProductLaunch #MarketReady #IdeasToImpact`,
+
+            `25. Mental Health Support
+            Running a business can be incredibly stressful. I was burned out and didn't even realize it. Solution Center KE noticed and recommended simple wellness practices, helped me delegate tasks, and supported me in building a healthier work-life balance. I'm now more focused, healthier, and my business is thriving. They don't just fix systems – they care about people.
+
+            💬 Question: How do you manage stress in your business or career? Share your tips! 🧘 #SolutionCenterKE #MentalHealth #Wellness #WorkLifeBalance #BurnoutRecovery #StressManagement #SelfCare #NairobiLife #HealthyLiving #SupportSystem`,
+
+            `26. Corporate Social Responsibility
+            We wanted to give back to our community but didn't know how to structure our CSR efforts. Solution Center KE helped us design a CSR program aligned with our values, identify causes that matter, and execute projects that truly make a difference. We've now supported schools, orphanages, and environmental projects. Our team is proud to be part of this.
+
+            💬 Question: What cause is your company passionate about? Share below! 🌍 #SolutionCenterKE #CSR #CorporateResponsibility #CommunitySupport #GiveBack #KenyaCSR #NairobiCompanies #SocialImpact #PurposeDriven #MakeADifference`,
+
+            `27. Waste Management
+            Our apartment complex was struggling with garbage collection – irregular pickups and piles of waste. Solution Center KE connected us with efficient waste management providers and helped us set up recycling systems. Now our compound is clean, we reduce waste, and we even earn from selling recyclables. It's a win-win.
+
+            💬 Question: How do you manage waste at home or work? Share your creative solutions! ♻️ #SolutionCenterKE #WasteManagement #Recycling #CleanLiving #SustainableLiving #NairobiHomes #KenyaEnvironment #ZeroWaste #GreenLiving #BetterCommunities`,
+
+            `28. Youth Mentorship
+            I'm a young entrepreneur, and I didn't have anyone to guide me. Solution Center KE paired me with a mentor who taught me business basics, helped me avoid costly mistakes, and encouraged me to keep going. I've now launched my business, and I'm profitable. Mentorship matters – and Solution Center KE made it happen.
+
+            💬 Question: Who has been your biggest mentor or inspiration? Tag them below to thank them! 🙏 #SolutionCenterKE #YouthMentorship #Entrepreneurship #YoungBusiness #MentorshipMatters #KenyaYouth #NairobiYoungEntrepreneurs #Guidance #Support #DreamBig`,
+
+            `29. Tourism Support
+            Our travel agency was struggling with bookings – manual processes, missed opportunities, and poor customer follow-up. Solution Center KE introduced a digital booking system and trained our team on customer engagement. Now our bookings are automated, we follow up consistently, and our clients come back. Tourism has rebounded, and we're ready for the next wave.
+
+            💬 Question: What's your dream travel destination in Kenya? Tell us! ✈️ #SolutionCenterKE #Tourism #TravelAgency #Bookings #CustomerExperience #KenyaTourism #NairobiTravel #TravelKenya #DigitalTourism #ExploreKenya`,
+
+            `30. Religious Institutions
+            Our church was having trouble managing its members and activities – no clear records, chaotic events, and poor communication. Solution Center KE helped us set up a simple member management system, calendar, and communication tools. Now we know who's part of our community, we plan events effectively, and everyone stays informed. This has transformed our church.
+
+            💬 Question: What role does faith play in your business or career? Share your perspective! ⛪ #SolutionCenterKE #ChurchManagement #ReligiousInstitutions #CommunityFaith #KenyaChurches #NairobiFaith #MemberManagement #ChurchGrowth #CommunityBuilding #FaithInAction`,
+
+            `31. Sports Management
+            We run a local football club, but we had no structure – no proper schedules, no clear roles, and players would show up late or not at all. Solution Center KE helped us organize everything – training schedules, match coordination, and even player management. Now we're more disciplined, winning more games, and our players are happier.
+
+            💬 Question: What's your favorite sport to watch or play? Tell us below! ⚽ #SolutionCenterKE #SportsManagement #FootballClub #TeamOrganization #NairobiSports #KenyaFootball #SportsDevelopment #TeamSpirit #Discipline #GameOn`,
+
+            `32. Coaching and Consulting
+            I'm a coach, and I needed help structuring my programs and reaching more clients. Solution Center KE helped me refine my offerings, create a marketing strategy, and even built a simple website. I've now doubled my client base, and my programs are more impactful. They didn't just give advice – they made things happen.
+
+            💬 Question: What's one area you'd like to grow in professionally? Share below! 📈 #SolutionCenterKE #Coaching #Consulting #ProfessionalDevelopment #KenyaCoaches #NairobiConsulting #Growth #ScaleYourBusiness #CoachLife #MakeAnImpact`,
+
+            `33. Art and Creative Industries
+            I'm a visual artist, and I had no idea how to sell my work online. Solution Center KE helped me set up a portfolio website, connected me with galleries, and even taught me how to use social media to reach buyers. I've sold more pieces in the last 6 months than in the previous 3 years. This is a dream come true.
+
+            💬 Question: Share an artwork or creative piece you love in the comments! 🎨 #SolutionCenterKE #Art #CreativeIndustry #VisualArt #KenyaArtists #NairobiArt #SellYourArt #CreativeEntrepreneurship #SupportArt #ArtCommunity`,
+
+            `34. Logistics for SMEs
+            We're an SME delivering products across Nairobi, and we had no reliable way to manage our deliveries. Solution Center KE introduced a simple dispatch tracking system that we can monitor from our phones. Now we know where each rider is, clients get real-time updates, and we deliver faster. We're saving time and money, and we're known for our reliability.
+
+            💬 Question: What's the most important factor for you when choosing a delivery service? 📦 #SolutionCenterKE #SME #Logistics #NairobiDelivery #BusinessEfficiency #TrackYourDeliveries #ReliableService #KenyaLogistics #SMEsupport #FastDelivery`,
+
+            `35. Fundraising and Grant Writing
+            We needed funding for our community project, but our grant applications were weak and often rejected. Solution Center KE helped us improve our grant writing skills, identify the right funding opportunities, and present our case compellingly. We've now secured three grants, and our project is fully funded. They turned our frustration into success.
+
+            💬 Question: Have you ever applied for a grant? Share your experience – tips welcome! 💰 #SolutionCenterKE #Fundraising #GrantWriting #CommunityProjects #NonProfit #KenyaNGOs #NairobiFunding #ProjectFunding #MakeADifference #SocialImpact`,
+
+            `36. Personal Finance
+            I was struggling to manage my personal finances – no budget, no savings, and constantly stressed about money. Solution Center KE introduced me to simple financial planning tools and taught me how to budget effectively. I now have savings, I've paid off debt, and I'm more confident about the future. This isn't just business advice – it's life-changing.
+
+            💬 Poll: Do you have an emergency savings fund? Yes or No? Vote below! 💵 #SolutionCenterKE #PersonalFinance #FinancialPlanning #Budgeting #Savings #MoneyManagement #NairobiFinance #FinancialFreedom #SmartMoney #LifeSkills`,
+
+            `37. Project Management
+            We had great ideas, but we couldn't execute them. Projects would stall, deadlines would pass, and team members would lose motivation. Solution Center KE introduced simple project management tools and taught us how to use them effectively. Now we plan, track, and deliver on time. Our team is more focused, and we're finally achieving our goals.
+
+            💬 Question: What's your biggest project management challenge? Let's solve it together! 📋 #SolutionCenterKE #ProjectManagement #Execution #TeamWork #NairobiProjects #KenyaBusiness #GoalSetting #OnTimeDelivery #Productivity #ProjectSuccess`,
+
+            `38. Creative Problem-Solving
+            We faced a complex challenge that seemed impossible to solve. Solution Center KE didn't give us a quick fix – they helped us think differently, explore new solutions, and implement creative approaches. We solved the problem and built a framework for future challenges. Their approach to problem-solving is something we now apply to everything we do.
+
+            💬 Question: Share a creative solution you've used to solve a tough problem! 💡 #SolutionCenterKE #ProblemSolving #CreativeThinking #Innovation #NairobiInnovation #KenyaBusiness #ThinkDifferent #SolutionsMindset #OvercomeChallenges #GrowthMindset`,
+
+            `39. Infrastructure and Development
+            Our community was struggling with infrastructure challenges – poor roads, no drainage, and limited access to clean water. Solution Center KE connected us with government agencies and helped us advocate effectively. We're now seeing real progress – roads are being fixed, and drainage is being installed. This is development in action.
+
+            💬 Question: What infrastructure improvement would benefit your community most? 🏗️ #SolutionCenterKE #Infrastructure #CommunityDevelopment #NairobiInfrastructure #KenyaDevelopment #RoadsAndDrainage #WaterForAll #CommunityAdvocacy #BuildingCommunities #Progress`,
+
+            `40. Solar Energy Solutions
+            We were paying high electricity bills and wanted to switch to solar, but we didn't know where to start. Solution Center KE connected us with reliable solar providers, helped us understand the investment, and even negotiated better prices. We've now installed solar panels, cut our electricity costs by 70%, and we're doing our part for the environment.
+
+            💬 Question: Have you considered switching to solar? What's holding you back? ☀️ #SolutionCenterKE #SolarEnergy #RenewableEnergy #GoGreen #NairobiSolar #KenyaEnergy #SustainableLiving #LowerCosts #CleanEnergy #GreenKenya`,
+
+            `41. Public Speaking and Communication
+            I was terrified of public speaking, and it was holding my career back. Solution Center KE connected me with a communication coach who taught me practical techniques to build confidence, structure my presentations, and engage audiences. I now speak at conferences and lead meetings with confidence. This has completely transformed my professional life.
+
+            💬 Question: What's your biggest fear when speaking in public? Share below – you're not alone! 🎤 #SolutionCenterKE #PublicSpeaking #CommunicationSkills #Confidence #CareerGrowth #NairobiSpeakers #KenyaProfessionals #PresentationSkills #SpeakWithConfidence #PersonalDevelopment`,
+
+            `42. Team Building and Culture
+            Our team morale was low – no collaboration, no trust, and constant conflicts. Solution Center KE helped us rebuild our team culture through workshops, activities, and facilitated conversations. We've built a more cohesive, supportive team that communicates openly and works together. Morale is high, and our results are improving.
+
+            💬 Question: What makes a great team culture in your opinion? Share your thoughts! 🤗 #SolutionCenterKE #TeamBuilding #CompanyCulture #WorkplaceMorale #Collaboration #NairobiTeams #KenyaWorkplaces #TrustBuilding #HappyTeams #BetterTogether`,
+
+            `43. eCommerce and Online Selling
+            We had products to sell, but our online store wasn't performing – no traffic, no sales. Solution Center KE audited our store, improved the user experience, helped us with product descriptions, and integrated better payment systems. Now our sales are increasing, and we're building a loyal online customer base. The potential is huge.
+
+            💬 Question: What's the best online store in Kenya? Share your favorites! 🛒 #SolutionCenterKE #eCommerce #OnlineSelling #DigitalBusiness #NairobiOnline #KenyaBusiness #ShopOnline #CustomerExperience #IncreaseSales #DigitalCommerce`,
+
+            `44. Mentorship Programs
+            I wanted to start a mentorship program for young professionals, but I didn't know how to structure it or attract participants. Solution Center KE helped me design the program, recruit mentors, and create a framework that ensures real impact. We now have 50 mentors guiding 200 young professionals across multiple sectors.
+
+            💬 Question: Have you ever mentored someone or been mentored? Share your experience! 🌟 #SolutionCenterKE #Mentorship #YoungProfessionals #CareerGuidance #KenyaYouth #NairobiMentors #Empowerment #FutureLeaders #ProfessionalDevelopment #Impact`,
+
+            `45. Artisan and Craft Support
+            We're a group of artisans making handmade crafts, but we had no market beyond our local area. Solution Center KE connected us with online platforms, taught us product photography, and helped us with packaging. Now we're selling to customers across Kenya and even exporting. Our business has grown beyond our wildest dreams.
+
+            💬 Question: What's the most beautiful handmade craft you've ever bought? Share a photo! 🧵 #SolutionCenterKE #Artisan #Crafts #Handmade #KenyaCrafts #NairobiArtisans #SupportLocal #MadeInKenya #ArtisanBusiness #ExportReady`,
+
+            `46. Community Health
+            Our community health program was struggling to reach people in remote areas. Solution Center KE helped us leverage mobile technology to send health reminders and information via SMS. Now we reach thousands more people, and health outcomes are improving. This is public health at scale.
+
+            💬 Question: What's one health tip that changed your life? Share it below! 🩺 #SolutionCenterKE #CommunityHealth #PublicHealth #HealthTech #KenyaHealth #NairobiHealth #MobileHealth #SMSAlerts #HealthForAll #CommunityWellness`,
+
+            `47. Environmental Conservation
+            We wanted to start a conservation project in our local forest, but we didn't have a plan, resources, or team. Solution Center KE helped us organize, fundraise, and recruit volunteers. We've now restored 5 hectares of forest, and we're seeing wildlife return. Conservation is possible when you have the right support.
+
+            💬 Question: Have you ever volunteered for a conservation project? Share your story! 🌿 #SolutionCenterKE #Conservation #EnvironmentalProtection #ForestRestoration #Wildlife #KenyaEnvironment #NairobiConservation #ProtectNature #GreenKenya #SaveOurForests`,
+
+            `48. Parenting Support
+            I'm a working parent, and I was struggling to balance career and family. Solution Center KE introduced me to time management techniques, flexible work arrangements, and self-care practices that helped me be more present with my children. My family is happier, and I'm more effective at work. This support has changed my life.
+
+            💬 Poll: What's your biggest parenting challenge? Share below – we're all learning! 👨‍👩‍👧‍👦 #SolutionCenterKE #Parenting #WorkLifeBalance #FamilyFirst #NairobiParents #KenyaFamilies #TimeManagement #SelfCare #HappyParenting #FamilySupport`,
+
+            `49. Sports Development
+            We wanted to develop a sports academy for underprivileged youth, but we had no facilities, coaching, or equipment. Solution Center KE connected us with donors, helped us find a venue, and even recruited volunteer coaches. We now have 120 young athletes training regularly – and some are winning national competitions.
+
+            💬 Question: What sport do you think should be promoted more in Kenya? Share your thoughts! 🏆 #SolutionCenterKE #SportsAcademy #YouthSports #KenyaAthletes #NairobiSports #SportsDevelopment #TeamSports #EmpowerYouth #DreamBig #SportForChange`,
+
+            `50. Personal Branding
+            I had no online presence, and my professional reputation was invisible. Solution Center KE helped me build a personal brand – from a professional website to LinkedIn optimization and content strategy. Now I'm known as an expert in my field, I receive speaking invitations, and I'm attracting new opportunities. Your brand is your future.
+
+            💬 Question: What's one thing you want to be known for professionally? Tell us below! 🌟 #SolutionCenterKE #PersonalBranding #ProfessionalPresence #CareerGrowth #NairobiProfessionals #KenyaCareers #BuildYourBrand #OnlineReputation #Leadership #Visibility`
         ];
 
-        // Step Forward KE posts (1–50) – full text including hashtags
+        // ─── EXACT POSTS (Step Forward KE) ──────────────────────────
         const stepPosts = [
-            "1. Education Access\nOur village school had 200 students but only 3 textbooks. Learning was a struggle, and children were falling behind. Step Forward KE heard about our plight and mobilized a book drive across Nairobi. Within a month, we received over 500 textbooks, exercise books, and stationery. They also connected us with volunteers who come twice a week to tutor the children in math and English. The difference is already visible – our students are more confident, attendance has improved, and we're seeing better grades. Step Forward KE didn't just donate books; they gave our children hope and a brighter future. We're now planning to build a small library. Thank you for believing in our community and investing in our children's education. #StepForwardKE #EducationForAll #BookDrive #KenyaEducation #NairobiSchools #StudentSuccess #LiteracyMatters #CommunitySupport #FutureLeaders #InvestInChildren",
-            "2. Health and Wellness\nOur community health center had no reliable source of clean water. Patients were drinking contaminated water, and we were seeing frequent cases of waterborne diseases. Step Forward KE stepped in and helped us drill a borehole and install a water purification system. Now we have clean, safe water for patients, staff, and the community. The number of waterborne illnesses has dropped dramatically. We're no longer sending people away because we couldn't help them. Step Forward KE didn't just give us water – they gave us the foundation for good health. This is what community development truly looks like. #StepForwardKE #CommunityHealth #CleanWater #HealthForAll #WaterIsLife #NairobiHealth #KenyaCommunities #SustainableHealth #PublicHealth #WellnessMatters",
-            "3. Youth Empowerment\nI'm a young person with big dreams but no opportunities. I didn't have a mentor, skills, or connections. Step Forward KE reached out to me through their youth mentorship program. They connected me with a mentor who guided me, helped me identify my strengths, and supported me in developing a business plan. Today, I run a small tailoring business, employ two people, and I'm even training other young people. Step Forward KE didn't just give me advice – they gave me the tools and confidence to transform my life. If they can do this for me, they can do it for any young person. #StepForwardKE #YouthEmpowerment #MentorshipMatters #YoungEntrepreneurs #KenyaYouth #NairobiYouth #BusinessStartup #Empowerment #FutureLeaders #DreamBig",
-            "4. Environmental Conservation\nOur forest was being destroyed by illegal logging and charcoal burning. We felt helpless and didn't know where to start. Step Forward KE mobilized our community, organized tree-planting campaigns, and connected us with the Kenya Forest Service. Together, we've planted over 10,000 trees and established a community patrol group to protect the remaining forest. Wildlife is returning, and the air is fresher. Step Forward KE didn't just plant trees – they revived our ecosystem. We're now a model for other communities facing similar challenges. This is conservation in action. #StepForwardKE #EnvironmentalConservation #TreePlanting #ForestProtection #SaveOurForests #KenyaEnvironment #NairobiGreen #ClimateAction #SustainableFuture #CommunityAction",
-            "5. Agriculture and Farming\nOur farming cooperative was struggling. We had no access to markets, and our produce was rotting. Step Forward KE connected us with buyers across Kenya, introduced us to modern farming techniques, and even helped us secure a grant for irrigation equipment. Our harvests have tripled, and we're now supplying supermarkets in Nairobi. Our families are eating well, and we have money to invest back into our farms. Step Forward KE didn't just improve our farming – they transformed our entire community's economy. Agriculture is our future, and they're helping us unlock our potential. #StepForwardKE #Agriculture #FarmingKenya #FoodSecurity #AgriBusiness #FarmersKE #NairobiSuppliers #SustainableFarming #RuralDevelopment #GrowingTogether",
-            "6. Gender Equality and Women's Empowerment\nIn my community, women had no voice. We were excluded from decision-making, had no access to resources, and were often victims of domestic violence. Step Forward KE started a women's empowerment program that taught us about our rights, helped us form support groups, and gave us skills to start small businesses. Today, I'm a leader in my community, and other women look up to me. We've started a women's savings group, and we're advocating for our rights. Step Forward KE didn't just empower me – they empowered an entire generation of women. This is the change we needed. #StepForwardKE #WomenEmpowerment #GenderEquality #WomenLeaders #KenyaWomen #NairobiWomen #WomenSupportingWomen #EconomicEmpowerment #BreakTheSilence #RightsForAll",
-            "7. Infrastructure and Development\nOur village had no access road. During the rainy season, we were completely cut off from the rest of the county. Children couldn't get to school, and sick people couldn't reach the hospital. Step Forward KE took up our case, worked with the county government, and mobilized resources. Within six months, we had a new road. Now we can travel year-round, and our economy is thriving. Farmers can transport their produce, and we can access services. Step Forward KE didn't just build a road – they connected us to opportunity and hope. #StepForwardKE #Infrastructure #RoadConstruction #CommunityDevelopment #KenyaInfrastructure #NairobiDevelopment #AccessToServices #Connectivity #Progress #BuildingCommunities",
-            "8. Disability Inclusion\nI have a physical disability, and I often felt invisible in my community. I couldn't access buildings, schools, or public services. Step Forward KE started a disability inclusion program that advocated for accessible infrastructure, trained community members on disability rights, and helped me secure a wheelchair. Now I can move around freely, I'm attending school, and I'm planning my career. Step Forward KE saw me, heard me, and included me. They didn't just accommodate my disability – they made me feel valued and empowered. This is what inclusion should look like. #StepForwardKE #DisabilityInclusion #Accessibility #RightsForAll #InclusiveCommunity #KenyaDisability #NairobiAccessibility #Empowerment #ValueEveryPerson #DiversityAndInclusion",
-            "9. Water and Sanitation\nOur community had no proper sanitation. Open defecation was common, and diseases were spreading. Step Forward KE worked with us to build public toilets, dig boreholes, and create awareness about hygiene. Now every household has a toilet, and we have clean water. Cases of typhoid and diarrhea have dropped significantly. Step Forward KE didn't just improve our sanitation – they saved lives and restored our dignity. This is the kind of impact that changes communities forever. #StepForwardKE #WaterAndSanitation #CleanWater #HygieneMatters #PublicHealth #KenyaSanitation #NairobiWater #SustainableSanitation #HealthForAll #CommunityWellness",
-            "10. Peace and Reconciliation\nOur community was divided by ethnic tensions. Neighbors no longer trusted each other, and there was constant fear. Step Forward KE facilitated peace dialogues, brought together community leaders, and helped us understand each other's perspectives. Today, we live in harmony. We celebrate each other's cultures, and we're working together on development projects. Step Forward KE didn't just bring peace – they healed our community. This is the power of dialogue and understanding. #StepForwardKE #PeaceBuilding #Reconciliation #CommunityUnity #KenyaPeace #NairobiHarmony #TogetherWeStand #ConflictResolution #HealingCommunities #OneNation",
-            "11. Youth Sports Development\nOur youth had no positive outlets. Many were getting into drugs and crime. Step Forward KE started a sports program that brought young people together through football, athletics, and netball. They provided equipment, training, and even organized competitions. Now over 300 young people are actively participating, and we've seen a significant drop in crime. Our youth are healthy, focused, and dreaming big. Step Forward KE didn't just start a sports league – they gave our young people hope and purpose. #StepForwardKE #SportsDevelopment #YouthSports #KenyaSports #NairobiAthletes #PositiveOutlets #HealthyYouth #TeamSports #DreamBig #SportForChange",
-            "12. Skill Development and Training\nI had no skills and couldn't find a job. I felt useless and hopeless. Step Forward KE offered a free skills training program in tailoring, carpentry, and IT. I joined the tailoring class, and six months later, I had a set of skills that I could use to earn a living. Now I run a small tailoring business and even train other young people. Step Forward KE didn't just give me skills – they gave me a livelihood and restored my self-worth. This is empowerment in action. #StepForwardKE #SkillsTraining #VocationalTraining #YouthEmployment #KenyaSkills #NairobiTraining #EarnALiving #SelfSufficiency #Empowerment #LifeSkills",
-            "13. Cultural Preservation\nOur culture was being lost. Our young people no longer spoke our language or practiced our traditions. Step Forward KE helped us organize cultural festivals, document our history, and teach our children about our heritage. Now we have an annual cultural celebration that attracts people from across the county. Our children are proud of their identity, and our elders feel valued. Step Forward KE didn't just preserve our culture – they strengthened our community's identity and pride. #StepForwardKE #CulturalPreservation #Heritage #KenyaCulture #NairobiTraditions #ProudlyKenyan #CulturalDiversity #Identity #CommunityPride #PreserveOurHistory",
-            "14. Entrepreneurship and Small Business Support\nI had a business idea, but I didn't know how to start. Step Forward KE provided training on business planning, financial management, and marketing. They also connected me with a small loan to buy initial stock. Today, I run a successful grocery store that employs two people. My family is no longer struggling to make ends meet. Step Forward KE didn't just help me start a business – they helped me build a future and create jobs for others. #StepForwardKE #Entrepreneurship #SmallBusiness #SMEsupport #KenyaBusiness #NairobiEntrepreneurs #BusinessStartup #FinancialLiteracy #JobCreation #EconomicEmpowerment",
-            "15. Refugee and Migrant Support\nWe arrived in Kenya as refugees with nothing. We didn't know the language, had no jobs, and felt lost. Step Forward KE welcomed us, gave us orientation, connected us with language classes, and helped us find employment. Today, we've built a new life. We're working, our children are in school, and we feel at home. Step Forward KE didn't just help us survive – they helped us thrive and integrate into the community. This is what humanity looks like. #StepForwardKE #RefugeeSupport #MigrantRights #WelcomeToKenya #NairobiRefugees #Integration #Humanity #Support #NewBeginnings #Hope",
-            "16. Climate Action\nClimate change was affecting our community – unpredictable rains, droughts, and crop failures. Step Forward KE launched a climate action program that taught us about sustainable farming, rainwater harvesting, and renewable energy. Now we're better prepared for climate challenges, and we're teaching other communities. Step Forward KE didn't just give us information – they gave us practical tools to adapt and survive. This is climate resilience in practice. #StepForwardKE #ClimateAction #SustainableLiving #RenewableEnergy #ClimateResilience #KenyaClimate #NairobiGreen #Adaptation #EnvironmentalSustainability #FutureReady",
-            "17. Food Security\nMany families in our community were going hungry. We had no food reserves, no income, and no safety net. Step Forward KE started a community garden initiative, providing seeds, training, and irrigation equipment. Today, our community garden feeds over 100 families, and we even sell surplus to local markets. Step Forward KE didn't just give us food – they gave us the means to feed ourselves sustainably. This is true food security. #StepForwardKE #FoodSecurity #CommunityGardens #ZeroHunger #KenyaFoodSecurity #NairobiGardens #SustainableAgriculture #FeedTheCommunity #SelfSufficiency #HungerFree",
-            "18. Housing and Shelter\nWe were living in informal settlements with no proper housing. Our homes were made of plastic and cardboard, and we had no access to clean water or sanitation. Step Forward KE advocated for better housing, connected us with affordable housing programs, and helped us access government support. Today, many families in our community have moved to better homes with running water and electricity. Step Forward KE didn't just improve our housing – they gave us dignity and security. #StepForwardKE #HousingForAll #AffordableHousing #DecentHomes #KenyaHousing #NairobiShelter #CommunityDevelopment #Dignity #SecureHousing #BetterLiving",
-            "19. Mental Health Awareness\nMental health was a taboo topic in our community. People suffering from depression or anxiety were stigmatized, and they had no access to support. Step Forward KE started a mental health awareness campaign, trained community health workers, and set up a free counseling service. Now people are talking openly, seeking help, and supporting each other. Step Forward KE didn't just raise awareness – they saved lives and built a more compassionate community. #StepForwardKE #MentalHealth #MentalHealthAwareness #EndTheStigma #KenyaMentalHealth #NairobiSupport #Wellness #SelfCare #CompassionateCommunity #BreakTheSilence",
-            "20. Elderly Care and Support\nOur elderly were being neglected. They were isolated, often ill, and had no one to care for them. Step Forward KE started a program to check on elderly residents, provide them with food, and connect them with medical care. Volunteers visit them daily, and our elderly now feel valued and loved. Step Forward KE didn't just support our elderly – they honored them and reminded our community of the importance of caring for our older citizens. #StepForwardKE #ElderlyCare #RespectOurElders #CommunitySupport #KenyaSeniors #NairobiElderly #CareAndCompassion #AgingWithDignity #LoveOurElderly #CommunityCare",
-            "21. Art and Culture Promotion\nOur community was rich in art and culture, but no one knew about it. Our artists had no platform to showcase their work. Step Forward KE organized cultural exhibitions, art fairs, and performances that attracted audiences from across the region. Our artists are now selling their work, gaining recognition, and inspiring the next generation. Step Forward KE didn't just promote art – they celebrated our identity and creativity. #StepForwardKE #ArtAndCulture #CreativeCommunity #KenyaArtists #NairobiArt #CulturalHeritage #Creativity #CelebrateCulture #ArtForChange #SupportArt",
-            "22. Clean Energy Access\nWe relied on kerosene and firewood for cooking and lighting. It was expensive, unhealthy, and bad for the environment. Step Forward KE connected us with clean energy providers, helped us access solar cookers and lamps, and trained us on maintenance. Now we have clean, affordable energy that doesn't harm our health or our environment. Step Forward KE didn't just give us energy – they gave us a healthier, more sustainable way of life. #StepForwardKE #CleanEnergy #RenewableEnergy #SolarPower #KenyaEnergy #NairobiCleanEnergy #SustainableLiving #HealthAndEnvironment #GreenEnergy #EnergyAccess",
-            "23. Financial Literacy and Savings\nWe had no culture of saving. We would earn and spend immediately, leaving nothing for emergencies or future investments. Step Forward KE taught us financial literacy – how to budget, save, and invest. We formed savings groups, and now many of us have emergency funds, small businesses, and better financial security. Step Forward KE didn't just teach us about money – they gave us financial freedom and peace of mind. #StepForwardKE #FinancialLiteracy #SavingsCulture #KenyaFinance #NairobiSavings #MoneyManagement #FinancialFreedom #EconomicEmpowerment #SaveForTheFuture #FinancialWellness",
-            "24. Community Policing and Safety\nCrime was a major concern in our community. We didn't trust the police and felt unsafe in our own homes. Step Forward KE facilitated community policing forums, bringing together residents and law enforcement. We established neighborhood watch groups and improved communication. Now crime has dropped, and we feel safer. Step Forward KE didn't just improve safety – they restored trust and built a stronger, more united community. #StepForwardKE #CommunitySafety #CrimePrevention #NeighborhoodWatch #KenyaSecurity #NairobiSafety #CommunityPolicing #BuildTrust #SafeNeighborhoods #UnitedCommunity",
-            "25. Early Childhood Education\nOur young children had no access to early childhood education. They were left at home with no stimulation or learning opportunities. Step Forward KE started a preschool program in our community, training caregivers and providing learning materials. Now our children are learning, socializing, and preparing for primary school. Step Forward KE didn't just start a school – they gave our children a strong start in life. #StepForwardKE #EarlyChildhoodEducation #Preschool #KenyaChildren #NairobiEducation #Learning #ChildDevelopment #BrightFuture #InvestInChildren #EducationMatters",
-            "26. Environmental Cleanliness\nOur streets were filled with litter, and we had no proper waste disposal system. It was unsightly and unhealthy. Step Forward KE organized a community cleanup campaign, provided waste bins, and worked with the county on regular collection. Our community is now clean, and we're proud of our environment. Step Forward KE didn't just clean our streets – they gave us pride in our community and taught us to keep it clean. #StepForwardKE #EnvironmentalCleanliness #WasteManagement #CleanCommunity #KenyaEnvironment #NairobiClean #CommunityPride #SustainableLiving #ZeroWaste #KeepKenyaClean",
-            "27. Digital Literacy\nIn today's world, digital skills are essential. But many in our community had never used a computer or smartphone. Step Forward KE set up a digital literacy center and trained us on basic computer skills, internet safety, and using online services. Now we can access government services online, communicate with family, and even find jobs. Step Forward KE didn't just teach us technology – they connected us to the digital world and its opportunities. #StepForwardKE #DigitalLiteracy #TechSkills #KenyaDigital #NairobiTech #InternetAccess #DigitalInclusion #DigitalKenya #BridgingTheGap #TechForAll",
-            "28. Family Support and Counseling\nWe were going through family challenges – financial stress, communication breakdowns, and constant arguments. Step Forward KE offered family counseling services and workshops on healthy relationships and parenting. Our family is now more united, we communicate better, and we support each other. Step Forward KE didn't just give us counseling – they helped heal our family and gave us tools for a brighter future. #StepForwardKE #FamilySupport #HealthyFamilies #CounselingServices #KenyaFamilies #NairobiCounseling #RelationshipAdvice #FamilyUnity #Together #LoveAndSupport",
-            "29. Livelihood Support\nI lost my job and didn't know how to provide for my family. I was depressed and felt like a failure. Step Forward KE connected me with livelihood support – small business grants, skills training, and job placement. Today, I'm a small business owner providing for my family. Step Forward KE didn't just support my livelihood – they restored my dignity and hope. #StepForwardKE #LivelihoodSupport #JobCreation #SmallBusinessGrant #KenyaJobs #NairobiEmployment #EconomicEmpowerment #SelfSufficient #HopeRestored #BetterFuture",
-            "30. Water Conservation\nWe were wasting water because we had no storage or conservation practices. During droughts, we suffered. Step Forward KE trained us on rainwater harvesting and water conservation techniques. Now we have water storage tanks, and we use water more efficiently. Even during dry seasons, we have enough. Step Forward KE didn't just teach us conservation – they made our community water-secure. #StepForwardKE #WaterConservation #RainwaterHarvesting #SaveWater #KenyaWater #NairobiSustainability #WaterSecurity #SustainableLiving #ClimateAdaptation #WaterIsLife",
-            "31. Civic Education\nMany of us didn't understand our rights or how to participate in governance. We felt ignored and powerless. Step Forward KE held civic education workshops that taught us about our rights, how to vote, and how to hold leaders accountable. Now we actively participate in community meetings, and our voices are heard. Step Forward KE didn't just educate us – they empowered us to demand better governance and be active citizens. #StepForwardKE #CivicEducation #CitizenRights #Governance #KenyaCivics #NairobiVoices #ActiveCitizens #DemandAccountability #EmpoweredCitizens #KnowYourRights",
-            "32. Renewable Energy for Schools\nOur school had no electricity, which made learning difficult. Step Forward KE installed solar panels on our school roof, providing lighting for classrooms and power for computers. Now our students can study even after dark, and we can use modern teaching tools. Step Forward KE didn't just electrify our school – they illuminated our students' future and opened up new learning opportunities. #StepForwardKE #RenewableEnergy #SolarSchools #KenyaEducation #NairobiRenewables #GreenEnergy #PowerForLearning #BrightFuture #SustainableEducation #EnergyAccess",
-            "33. Community Libraries\nOur community had no library, and children had no access to books or a quiet place to study. Step Forward KE helped us establish a community library, stocked with books and computers. Now children and adults alike come to read, study, and learn. Step Forward KE didn't just build a library – they created a space for knowledge and growth that will benefit our community for generations. #StepForwardKE #CommunityLibraries #ReadingCulture #KenyaLibraries #NairobiEducation #KnowledgeForAll #AccessToBooks #LifelongLearning #EducateCommunities #BookLove",
-            "34. First Aid and Emergency Response\nWe had no one trained in first aid in our community. When accidents happened, we didn't know what to do. Step Forward KE trained 30 community members in first aid and emergency response. Now we can handle emergencies before professional help arrives. Step Forward KE didn't just train us – they gave us the skills to save lives and keep our community safe. #StepForwardKE #FirstAidTraining #EmergencyResponse #KenyaHealth #NairobiSafety #LifeSavingSkills #CommunityHealth #PrepareToHelp #SafeCommunities #EmergencyPreparedness",
-            "35. Sustainable Agriculture\nOur farming practices were depleting the soil, and yields were declining. Step Forward KE introduced us to sustainable agriculture – composting, crop rotation, and organic farming. Now our soil is healthier, our yields have increased, and we're producing food without harming the environment. Step Forward KE didn't just teach us farming techniques – they showed us how to farm for the future and protect our land. #StepForwardKE #SustainableAgriculture #OrganicFarming #KenyaFarming #NairobiAgri #SoilHealth #FoodProduction #FutureFarming #EcoFriendly #FarmersForChange",
-            "36. Community Healthcare\nOur community had no access to basic healthcare. The nearest clinic was 10 kilometers away. Step Forward KE set up a community health post, trained community health workers, and provided essential medicines. Now we have access to quality healthcare close to home. Step Forward KE didn't just build a clinic – they brought health and hope to our doorstep. #StepForwardKE #CommunityHealthcare #HealthPost #KenyaHealth #NairobiHealthcare #AccessToHealth #CommunityHealthWorkers #Wellness #HealthyCommunities #HealthForAll",
-            "37. Skills for Employment\nI had a degree but no practical skills, and I couldn't find a job. Step Forward KE offered career guidance, internships, and job placement support. Today, I'm employed in my field, and I'm building my career. Step Forward KE didn't just help me find a job – they gave me the skills and confidence to succeed. #StepForwardKE #SkillsForEmployment #CareerGuidance #KenyaJobs #NairobiEmployment #YouthEmployment #Internships #JobPlacement #CareerSuccess #WorkReady",
-            "38. Community Markets\nOur farmers and artisans had no place to sell their goods. We were forced to sell to middlemen at low prices. Step Forward KE helped us establish a community market where we sell directly to consumers. Now we get better prices, and our products are reaching a wider audience. Step Forward KE didn't just build a market – they empowered our local economy and helped us thrive. #StepForwardKE #CommunityMarkets #BuyLocal #KenyaTrade #NairobiMarkets #Artisans #FarmersMarket #EconomicEmpowerment #SupportLocal #ThrivingCommunities",
-            "39. Waste to Wealth\nWe saw waste as a problem. Step Forward KE taught us how to turn waste into wealth – recycling plastics, making compost, and creating sustainable products. Now we've started a small recycling business that creates jobs and cleans our environment. Step Forward KE didn't just solve a waste problem – they created economic opportunities and protected our environment. #StepForwardKE #WasteToWealth #Recycling #KenyaEnvironment #NairobiRecycling #CircularEconomy #GreenBusiness #SustainableLiving #EcoEntrepreneurship #ZeroWaste",
-            "40. Leadership and Governance\nWomen were often excluded from leadership roles in our community. Step Forward KE conducted leadership training for women and encouraged them to run for community positions. Today, we have women leading our community committees, and our voices are finally heard. Step Forward KE didn't just train us – they empowered us to take our rightful place as leaders and change-makers. #StepForwardKE #WomenLeadership #Governance #KenyaWomen #NairobiLeaders #BreakTheGlassCeiling #WomenInPower #CommunityLeaders #Empowerment #ChangeMakers",
-            "41. Irrigation and Water Access\nOur farms were failing due to lack of water. Step Forward KE helped us install drip irrigation systems and access affordable water pumps. Now we can farm year-round, even during dry seasons. Our harvests have improved, and our families are food secure. Step Forward KE didn't just give us water – they gave us the means to farm through the seasons and build resilience. #StepForwardKE #Irrigation #WaterAccess #KenyaFarming #NairobiAgriculture #YearRoundFarming #FoodSecurity #WaterPumps #SustainableFarming #ResilientCommunities",
-            "42. After-School Programs\nOur children had no supervision after school, leading to behavioral issues and poor performance. Step Forward KE started after-school programs with tutoring, sports, and life skills. Our children are now doing better in school, staying out of trouble, and developing valuable skills. Step Forward KE didn't just keep our children safe – they invested in their education and holistic development. #StepForwardKE #AfterSchoolPrograms #ChildDevelopment #KenyaChildren #NairobiYouth #Mentorship #LifeSkills #AcademicSupport #SafeSpaces #BrightFutures",
-            "43. Food Processing and Storage\nOur farmers were losing up to 40% of their produce due to lack of processing and storage facilities. Step Forward KE provided solar dryers and storage facilities, reducing post-harvest losses. Now we can process and store our produce, selling throughout the year. Step Forward KE didn't just reduce losses – they increased our income and reduced food waste. #StepForwardKE #FoodProcessing #PostHarvestLoss #KenyaFarmers #NairobiStorage #SolarDryers #FoodPreservation #ReduceWaste #IncreaseIncome #FoodSecurity",
-            "44. Sanitary Products for Girls\nMany girls in our community were missing school during their menstruation because they couldn't afford sanitary products. Step Forward KE started a program providing free sanitary pads and menstrual hygiene education. Now our girls attend school regularly and with dignity. Step Forward KE didn't just provide products – they ensured girls' education continues un-interrupted. #StepForwardKE #SanitaryProducts #MenstrualHygiene #KenyaGirls #NairobiEducation #DignityForGirls #KeepGirlsInSchool #WomenHealth #GenderEquality #EmpowerGirls",
-            "45. Cooperative Formation\nWe worked individually and struggled to get good prices for our products. Step Forward KE helped us form a cooperative, trained us on management, and connected us with markets. Now we negotiate better prices, share resources, and support each other. Step Forward KE didn't just form a cooperative – they unified our community and increased our economic power. #StepForwardKE #Cooperative #CommunityUnity #KenyaCooperatives #NairobiTrade #EconomicPower #SupportEachOther #BetterPrices #Solidarity #StrongerTogether",
-            "46. Road Safety and Traffic Management\nOur roads were dangerous, and we saw many accidents. Step Forward KE conducted road safety campaigns, trained community members on traffic rules, and worked with authorities on road improvements. Now our roads are safer, and accidents have decreased. Step Forward KE didn't just educate us – they saved lives and made our streets safer for everyone. #StepForwardKE #RoadSafety #SafeRoads #KenyaTraffic #NairobiRoads #AccidentPrevention #SafeTravel #CommunitySafety #RoadAwareness #SaveLives",
-            "47. Beekeeping and Honey Production\nWe were looking for alternative livelihoods. Step Forward KE introduced us to beekeeping, provided training and equipment. Now we produce high-quality honey that sells well in local markets. Step Forward KE didn't just introduce a new skill – they gave us a sustainable livelihood and a way to diversify our income. #StepForwardKE #Beekeeping #HoneyProduction #KenyaLivelihood #NairobiBeekeeping #SustainableIncome #AlternativeLivelihoods #Biodiversity #Pollinators #SweetSuccess",
-            "48. Music and Arts Programs\nOur youth were talented but had no platform to showcase their abilities. Step Forward KE started music and arts programs, providing instruments, training, and performance opportunities. Our youth are now expressing themselves creatively and gaining recognition. Step Forward KE didn't just give them instruments – they unleashed their creativity and built confidence. #StepForwardKE #MusicAndArts #KenyaArtists #NairobiCreatives #YouthExpression #CreativeTalent #ArtsForChange #CreativeCommunity #InspireYouth #TalentUnleashed",
-            "49. Apiculture and Honey Value Addition\nWe were producing raw honey but not getting good prices. Step Forward KE taught us value addition – packaging, labeling, and branding. Now we sell branded honey at premium prices. Step Forward KE didn't just teach us production – they taught us business, enabling us to maximize our profits. #StepForwardKE #HoneyValueAddition #Agribusiness #KenyaHoney #NairobiValueAddition #PremiumProducts #Entrepreneurship #Agripreneur #SmallBusiness #MaximizeProfits",
-            "50. Community News and Information\nWe had no access to reliable information. Rumors spread quickly, and we didn't know what was true. Step Forward KE established a community newsletter and WhatsApp group with verified news and updates. Now we stay informed and make better decisions. Step Forward KE didn't just share information – they created a more informed and connected community. #StepForwardKE #CommunityInformation #VerifiedNews #KenyaCommunities #NairobiNews #StayInformed #ConnectedCommunity #TruthMatters #CommunityNews #KnowledgeIsPower"
+            `1. Education Access
+            Our village school had 200 students but only 3 textbooks. Learning was a struggle, and children were falling behind. Step Forward KE heard about our plight and mobilized a book drive across Nairobi. Within a month, we received over 500 textbooks, exercise books, and stationery. They also connected us with volunteers who come twice a week to tutor the children in math and English. The difference is already visible – our students are more confident, attendance has improved, and we're seeing better grades. Step Forward KE didn't just donate books; they gave our children hope and a brighter future. We're now planning to build a small library. Thank you for believing in our community and investing in our children's education.
+
+            💬 Question: What's one thing your school needs most? Share below – maybe we can help! 📚 #StepForwardKE #EducationForAll #BookDrive #KenyaEducation #NairobiSchools #StudentSuccess #LiteracyMatters #CommunitySupport #FutureLeaders #InvestInChildren`,
+
+            `2. Health and Wellness
+            Our community health center had no reliable source of clean water. Patients were drinking contaminated water, and we were seeing frequent cases of waterborne diseases. Step Forward KE stepped in and helped us drill a borehole and install a water purification system. Now we have clean, safe water for patients, staff, and the community. The number of waterborne illnesses has dropped dramatically. We're no longer sending people away because we couldn't help them. Step Forward KE didn't just give us water – they gave us the foundation for good health. This is what community development truly looks like.
+
+            💬 Poll: Do you have access to clean water in your community? Yes or No? Vote below! 💧 #StepForwardKE #CommunityHealth #CleanWater #HealthForAll #WaterIsLife #NairobiHealth #KenyaCommunities #SustainableHealth #PublicHealth #WellnessMatters`,
+
+            `3. Youth Empowerment
+            I'm a young person with big dreams but no opportunities. I didn't have a mentor, skills, or connections. Step Forward KE reached out to me through their youth mentorship program. They connected me with a mentor who guided me, helped me identify my strengths, and supported me in developing a business plan. Today, I run a small tailoring business, employ two people, and I'm even training other young people. Step Forward KE didn't just give me advice – they gave me the tools and confidence to transform my life. If they can do this for me, they can do it for any young person.
+
+            💬 Question: What's your dream career or business? Tell us below! 👔 #StepForwardKE #YouthEmpowerment #MentorshipMatters #YoungEntrepreneurs #KenyaYouth #NairobiYouth #BusinessStartup #Empowerment #FutureLeaders #DreamBig`,
+
+            `4. Environmental Conservation
+            Our forest was being destroyed by illegal logging and charcoal burning. We felt helpless and didn't know where to start. Step Forward KE mobilized our community, organized tree-planting campaigns, and connected us with the Kenya Forest Service. Together, we've planted over 10,000 trees and established a community patrol group to protect the remaining forest. Wildlife is returning, and the air is fresher. Step Forward KE didn't just plant trees – they revived our ecosystem. We're now a model for other communities facing similar challenges. This is conservation in action.
+
+            💬 Question: Have you planted a tree this year? Share a photo below! 🌳 #StepForwardKE #EnvironmentalConservation #TreePlanting #ForestProtection #SaveOurForests #KenyaEnvironment #NairobiGreen #ClimateAction #SustainableFuture #CommunityAction`,
+
+            `5. Agriculture and Farming
+            Our farming cooperative was struggling. We had no access to markets, and our produce was rotting. Step Forward KE connected us with buyers across Kenya, introduced us to modern farming techniques, and even helped us secure a grant for irrigation equipment. Our harvests have tripled, and we're now supplying supermarkets in Nairobi. Our families are eating well, and we have money to invest back into our farms. Step Forward KE didn't just improve our farming – they transformed our entire community's economy. Agriculture is our future, and they're helping us unlock our potential.
+
+            💬 Question: What's your favorite locally grown vegetable? Share below! 🌽 #StepForwardKE #Agriculture #FarmingKenya #FoodSecurity #AgriBusiness #FarmersKE #NairobiSuppliers #SustainableFarming #RuralDevelopment #GrowingTogether`,
+
+            `6. Gender Equality and Women's Empowerment
+            In my community, women had no voice. We were excluded from decision-making, had no access to resources, and were often victims of domestic violence. Step Forward KE started a women's empowerment program that taught us about our rights, helped us form support groups, and gave us skills to start small businesses. Today, I'm a leader in my community, and other women look up to me. We've started a women's savings group, and we're advocating for our rights. Step Forward KE didn't just empower me – they empowered an entire generation of women. This is the change we needed.
+
+            💬 Question: Tag a woman who inspires you and tell us why! 👩‍🦱 #StepForwardKE #WomenEmpowerment #GenderEquality #WomenLeaders #KenyaWomen #NairobiWomen #WomenSupportingWomen #EconomicEmpowerment #BreakTheSilence #RightsForAll`,
+
+            `7. Infrastructure and Development
+            Our village had no access road. During the rainy season, we were completely cut off from the rest of the county. Children couldn't get to school, and sick people couldn't reach the hospital. Step Forward KE took up our case, worked with the county government, and mobilized resources. Within six months, we had a new road. Now we can travel year-round, and our economy is thriving. Farmers can transport their produce, and we can access services. Step Forward KE didn't just build a road – they connected us to opportunity and hope.
+
+            💬 Question: What infrastructure improvement would transform your community? 🛣️ #StepForwardKE #Infrastructure #RoadConstruction #CommunityDevelopment #KenyaInfrastructure #NairobiDevelopment #AccessToServices #Connectivity #Progress #BuildingCommunities`,
+
+            `8. Disability Inclusion
+            I have a physical disability, and I often felt invisible in my community. I couldn't access buildings, schools, or public services. Step Forward KE started a disability inclusion program that advocated for accessible infrastructure, trained community members on disability rights, and helped me secure a wheelchair. Now I can move around freely, I'm attending school, and I'm planning my career. Step Forward KE saw me, heard me, and included me. They didn't just accommodate my disability – they made me feel valued and empowered. This is what inclusion should look like.
+
+            💬 Question: How can we make our communities more inclusive? Share your ideas! ♿ #StepForwardKE #DisabilityInclusion #Accessibility #RightsForAll #InclusiveCommunity #KenyaDisability #NairobiAccessibility #Empowerment #ValueEveryPerson #DiversityAndInclusion`,
+
+            `9. Water and Sanitation
+            Our community had no proper sanitation. Open defecation was common, and diseases were spreading. Step Forward KE worked with us to build public toilets, dig boreholes, and create awareness about hygiene. Now every household has a toilet, and we have clean water. Cases of typhoid and diarrhea have dropped significantly. Step Forward KE didn't just improve our sanitation – they saved lives and restored our dignity. This is the kind of impact that changes communities forever.
+
+            💬 Poll: Do you have a toilet at home? Yes or No? Share below! 🚽 #StepForwardKE #WaterAndSanitation #CleanWater #HygieneMatters #PublicHealth #KenyaSanitation #NairobiWater #SustainableSanitation #HealthForAll #CommunityWellness`,
+
+            `10. Peace and Reconciliation
+            Our community was divided by ethnic tensions. Neighbors no longer trusted each other, and there was constant fear. Step Forward KE facilitated peace dialogues, brought together community leaders, and helped us understand each other's perspectives. Today, we live in harmony. We celebrate each other's cultures, and we're working together on development projects. Step Forward KE didn't just bring peace – they healed our community. This is the power of dialogue and understanding.
+
+            💬 Question: What's one thing you can do today to promote peace in your community? 🕊️ #StepForwardKE #PeaceBuilding #Reconciliation #CommunityUnity #KenyaPeace #NairobiHarmony #TogetherWeStand #ConflictResolution #HealingCommunities #OneNation`,
+
+            `11. Youth Sports Development
+            Our youth had no positive outlets. Many were getting into drugs and crime. Step Forward KE started a sports program that brought young people together through football, athletics, and netball. They provided equipment, training, and even organized competitions. Now over 300 young people are actively participating, and we've seen a significant drop in crime. Our youth are healthy, focused, and dreaming big. Step Forward KE didn't just start a sports league – they gave our young people hope and purpose.
+
+            💬 Question: What's your favorite sport to play? Tag your teammates below! ⚽ #StepForwardKE #SportsDevelopment #YouthSports #KenyaSports #NairobiAthletes #PositiveOutlets #HealthyYouth #TeamSports #DreamBig #SportForChange`,
+
+            `12. Skill Development and Training
+            I had no skills and couldn't find a job. I felt useless and hopeless. Step Forward KE offered a free skills training program in tailoring, carpentry, and IT. I joined the tailoring class, and six months later, I had a set of skills that I could use to earn a living. Now I run a small tailoring business and even train other young people. Step Forward KE didn't just give me skills – they gave me a livelihood and restored my self-worth. This is empowerment in action.
+
+            💬 Question: What skill would you like to learn? Share below! 🔧 #StepForwardKE #SkillsTraining #VocationalTraining #YouthEmployment #KenyaSkills #NairobiTraining #EarnALiving #SelfSufficiency #Empowerment #LifeSkills`,
+
+            `13. Cultural Preservation
+            Our culture was being lost. Our young people no longer spoke our language or practiced our traditions. Step Forward KE helped us organize cultural festivals, document our history, and teach our children about our heritage. Now we have an annual cultural celebration that attracts people from across the county. Our children are proud of their identity, and our elders feel valued. Step Forward KE didn't just preserve our culture – they strengthened our community's identity and pride.
+
+            💬 Question: What's your favorite Kenyan cultural tradition? Share below! 🎭 #StepForwardKE #CulturalPreservation #Heritage #KenyaCulture #NairobiTraditions #ProudlyKenyan #CulturalDiversity #Identity #CommunityPride #PreserveOurHistory`,
+
+            `14. Entrepreneurship and Small Business Support
+            I had a business idea, but I didn't know how to start. Step Forward KE provided training on business planning, financial management, and marketing. They also connected me with a small loan to buy initial stock. Today, I run a successful grocery store that employs two people. My family is no longer struggling to make ends meet. Step Forward KE didn't just help me start a business – they helped me build a future and create jobs for others.
+
+            💬 Question: What business would you start with unlimited resources? Share your dream! 💼 #StepForwardKE #Entrepreneurship #SmallBusiness #SMEsupport #KenyaBusiness #NairobiEntrepreneurs #BusinessStartup #FinancialLiteracy #JobCreation #EconomicEmpowerment`,
+
+            `15. Refugee and Migrant Support
+            We arrived in Kenya as refugees with nothing. We didn't know the language, had no jobs, and felt lost. Step Forward KE welcomed us, gave us orientation, connected us with language classes, and helped us find employment. Today, we've built a new life. We're working, our children are in school, and we feel at home. Step Forward KE didn't just help us survive – they helped us thrive and integrate into the community. This is what humanity looks like.
+
+            💬 Question: What does community mean to you? Share below! 🤝 #StepForwardKE #RefugeeSupport #MigrantRights #WelcomeToKenya #NairobiRefugees #Integration #Humanity #Support #NewBeginnings #Hope`,
+
+            `16. Climate Action
+            Climate change was affecting our community – unpredictable rains, droughts, and crop failures. Step Forward KE launched a climate action program that taught us about sustainable farming, rainwater harvesting, and renewable energy. Now we're better prepared for climate challenges, and we're teaching other communities. Step Forward KE didn't just give us information – they gave us practical tools to adapt and survive. This is climate resilience in practice.
+
+            💬 Poll: Do you believe climate change is affecting Kenya? Yes or No? Vote! 🌍 #StepForwardKE #ClimateAction #SustainableLiving #RenewableEnergy #ClimateResilience #KenyaClimate #NairobiGreen #Adaptation #EnvironmentalSustainability #FutureReady`,
+
+            `17. Food Security
+            Many families in our community were going hungry. We had no food reserves, no income, and no safety net. Step Forward KE started a community garden initiative, providing seeds, training, and irrigation equipment. Today, our community garden feeds over 100 families, and we even sell surplus to local markets. Step Forward KE didn't just give us food – they gave us the means to feed ourselves sustainably. This is true food security.
+
+            💬 Question: What's one way we can reduce food waste in Kenya? Share your ideas! 🍅 #StepForwardKE #FoodSecurity #CommunityGardens #ZeroHunger #KenyaFoodSecurity #NairobiGardens #SustainableAgriculture #FeedTheCommunity #SelfSufficiency #HungerFree`,
+
+            `18. Housing and Shelter
+            We were living in informal settlements with no proper housing. Our homes were made of plastic and cardboard, and we had no access to clean water or sanitation. Step Forward KE advocated for better housing, connected us with affordable housing programs, and helped us access government support. Today, many families in our community have moved to better homes with running water and electricity. Step Forward KE didn't just improve our housing – they gave us dignity and security.
+
+            💬 Question: What does a decent home mean to you? Share below! 🏠 #StepForwardKE #HousingForAll #AffordableHousing #DecentHomes #KenyaHousing #NairobiShelter #CommunityDevelopment #Dignity #SecureHousing #BetterLiving`,
+
+            `19. Mental Health Awareness
+            Mental health was a taboo topic in our community. People suffering from depression or anxiety were stigmatized, and they had no access to support. Step Forward KE started a mental health awareness campaign, trained community health workers, and set up a free counseling service. Now people are talking openly, seeking help, and supporting each other. Step Forward KE didn't just raise awareness – they saved lives and built a more compassionate community.
+
+            💬 Question: How do you take care of your mental health? Share your tips! 🧠 #StepForwardKE #MentalHealth #MentalHealthAwareness #EndTheStigma #KenyaMentalHealth #NairobiSupport #Wellness #SelfCare #CompassionateCommunity #BreakTheSilence`,
+
+            `20. Elderly Care and Support
+            Our elderly were being neglected. They were isolated, often ill, and had no one to care for them. Step Forward KE started a program to check on elderly residents, provide them with food, and connect them with medical care. Volunteers visit them daily, and our elderly now feel valued and loved. Step Forward KE didn't just support our elderly – they honored them and reminded our community of the importance of caring for our older citizens.
+
+            💬 Question: What can we do to better care for our elderly? Share your thoughts! 👴 #StepForwardKE #ElderlyCare #RespectOurElders #CommunitySupport #KenyaSeniors #NairobiElderly #CareAndCompassion #AgingWithDignity #LoveOurElderly #CommunityCare`,
+
+            `21. Art and Culture Promotion
+            Our community was rich in art and culture, but no one knew about it. Our artists had no platform to showcase their work. Step Forward KE organized cultural exhibitions, art fairs, and performances that attracted audiences from across the region. Our artists are now selling their work, gaining recognition, and inspiring the next generation. Step Forward KE didn't just promote art – they celebrated our identity and creativity.
+
+            💬 Question: Share a photo of Kenyan art that inspires you! 🎨 #StepForwardKE #ArtAndCulture #CreativeCommunity #KenyaArtists #NairobiArt #CulturalHeritage #Creativity #CelebrateCulture #ArtForChange #SupportArt`,
+
+            `22. Clean Energy Access
+            We relied on kerosene and firewood for cooking and lighting. It was expensive, unhealthy, and bad for the environment. Step Forward KE connected us with clean energy providers, helped us access solar cookers and lamps, and trained us on maintenance. Now we have clean, affordable energy that doesn't harm our health or our environment. Step Forward KE didn't just give us energy – they gave us a healthier, more sustainable way of life.
+
+            💬 Question: Have you switched to clean energy? Share your experience! ☀️ #StepForwardKE #CleanEnergy #RenewableEnergy #SolarPower #KenyaEnergy #NairobiCleanEnergy #SustainableLiving #HealthAndEnvironment #GreenEnergy #EnergyAccess`,
+
+            `23. Financial Literacy and Savings
+            We had no culture of saving. We would earn and spend immediately, leaving nothing for emergencies or future investments. Step Forward KE taught us financial literacy – how to budget, save, and invest. We formed savings groups, and now many of us have emergency funds, small businesses, and better financial security. Step Forward KE didn't just teach us about money – they gave us financial freedom and peace of mind.
+
+            💬 Poll: Do you have a savings plan? Yes or No? Vote below! 💰 #StepForwardKE #FinancialLiteracy #SavingsCulture #KenyaFinance #NairobiSavings #MoneyManagement #FinancialFreedom #EconomicEmpowerment #SaveForTheFuture #FinancialWellness`,
+
+            `24. Community Policing and Safety
+            Crime was a major concern in our community. We didn't trust the police and felt unsafe in our own homes. Step Forward KE facilitated community policing forums, bringing together residents and law enforcement. We established neighborhood watch groups and improved communication. Now crime has dropped, and we feel safer. Step Forward KE didn't just improve safety – they restored trust and built a stronger, more united community.
+
+            💬 Question: What makes you feel safe in your community? Share below! 🚔 #StepForwardKE #CommunitySafety #CrimePrevention #NeighborhoodWatch #KenyaSecurity #NairobiSafety #CommunityPolicing #BuildTrust #SafeNeighborhoods #UnitedCommunity`,
+
+            `25. Early Childhood Education
+            Our young children had no access to early childhood education. They were left at home with no stimulation or learning opportunities. Step Forward KE started a preschool program in our community, training caregivers and providing learning materials. Now our children are learning, socializing, and preparing for primary school. Step Forward KE didn't just start a school – they gave our children a strong start in life.
+
+            💬 Question: What did you love most about preschool? Share your memories! 🧸 #StepForwardKE #EarlyChildhoodEducation #Preschool #KenyaChildren #NairobiEducation #Learning #ChildDevelopment #BrightFuture #InvestInChildren #EducationMatters`,
+
+            `26. Environmental Cleanliness
+            Our streets were filled with litter, and we had no proper waste disposal system. It was unsightly and unhealthy. Step Forward KE organized a community cleanup campaign, provided waste bins, and worked with the county on regular collection. Our community is now clean, and we're proud of our environment. Step Forward KE didn't just clean our streets – they gave us pride in our community and taught us to keep it clean.
+
+            💬 Question: What's one thing you can do to keep your community clean? 🗑️ #StepForwardKE #EnvironmentalCleanliness #WasteManagement #CleanCommunity #KenyaEnvironment #NairobiClean #CommunityPride #SustainableLiving #ZeroWaste #KeepKenyaClean`,
+
+            `27. Digital Literacy
+            In today's world, digital skills are essential. But many in our community had never used a computer or smartphone. Step Forward KE set up a digital literacy center and trained us on basic computer skills, internet safety, and using online services. Now we can access government services online, communicate with family, and even find jobs. Step Forward KE didn't just teach us technology – they connected us to the digital world and its opportunities.
+
+            💬 Question: What's one digital skill you'd like to learn? 💻 #StepForwardKE #DigitalLiteracy #TechSkills #KenyaDigital #NairobiTech #InternetAccess #DigitalInclusion #DigitalKenya #BridgingTheGap #TechForAll`,
+
+            `28. Family Support and Counseling
+            We were going through family challenges – financial stress, communication breakdowns, and constant arguments. Step Forward KE offered family counseling services and workshops on healthy relationships and parenting. Our family is now more united, we communicate better, and we support each other. Step Forward KE didn't just give us counseling – they helped heal our family and gave us tools for a brighter future.
+
+            💬 Question: What's your advice for a strong, happy family? Share below! 👨‍👩‍👧‍👦 #StepForwardKE #FamilySupport #HealthyFamilies #CounselingServices #KenyaFamilies #NairobiCounseling #RelationshipAdvice #FamilyUnity #Together #LoveAndSupport`,
+
+            `29. Livelihood Support
+            I lost my job and didn't know how to provide for my family. I was depressed and felt like a failure. Step Forward KE connected me with livelihood support – small business grants, skills training, and job placement. Today, I'm a small business owner providing for my family. Step Forward KE didn't just support my livelihood – they restored my dignity and hope.
+
+            💬 Question: What's one way we can create more jobs in Kenya? Share your ideas! 💼 #StepForwardKE #LivelihoodSupport #JobCreation #SmallBusinessGrant #KenyaJobs #NairobiEmployment #EconomicEmpowerment #SelfSufficient #HopeRestored #BetterFuture`,
+
+            `30. Water Conservation
+            We were wasting water because we had no storage or conservation practices. During droughts, we suffered. Step Forward KE trained us on rainwater harvesting and water conservation techniques. Now we have water storage tanks, and we use water more efficiently. Even during dry seasons, we have enough. Step Forward KE didn't just teach us conservation – they made our community water-secure.
+
+            💬 Question: How do you conserve water at home? Share your tips! 💧 #StepForwardKE #WaterConservation #RainwaterHarvesting #SaveWater #KenyaWater #NairobiSustainability #WaterSecurity #SustainableLiving #ClimateAdaptation #WaterIsLife`,
+
+            `31. Civic Education
+            Many of us didn't understand our rights or how to participate in governance. We felt ignored and powerless. Step Forward KE held civic education workshops that taught us about our rights, how to vote, and how to hold leaders accountable. Now we actively participate in community meetings, and our voices are heard. Step Forward KE didn't just educate us – they empowered us to demand better governance and be active citizens.
+
+            💬 Poll: Did you vote in the last election? Yes or No? Vote below! 🗳️ #StepForwardKE #CivicEducation #CitizenRights #Governance #KenyaCivics #NairobiVoices #ActiveCitizens #DemandAccountability #EmpoweredCitizens #KnowYourRights`,
+
+            `32. Renewable Energy for Schools
+            Our school had no electricity, which made learning difficult. Step Forward KE installed solar panels on our school roof, providing lighting for classrooms and power for computers. Now our students can study even after dark, and we can use modern teaching tools. Step Forward KE didn't just electrify our school – they illuminated our students' future and opened up new learning opportunities.
+
+            💬 Question: What's one thing your school needed growing up? Share below! 🔆 #StepForwardKE #RenewableEnergy #SolarSchools #KenyaEducation #NairobiRenewables #GreenEnergy #PowerForLearning #BrightFuture #SustainableEducation #EnergyAccess`,
+
+            `33. Community Libraries
+            Our community had no library, and children had no access to books or a quiet place to study. Step Forward KE helped us establish a community library, stocked with books and computers. Now children and adults alike come to read, study, and learn. Step Forward KE didn't just build a library – they created a space for knowledge and growth that will benefit our community for generations.
+
+            💬 Question: What's your favorite book? Share your recommendation below! 📖 #StepForwardKE #CommunityLibraries #ReadingCulture #KenyaLibraries #NairobiEducation #KnowledgeForAll #AccessToBooks #LifelongLearning #EducateCommunities #BookLove`,
+
+            `34. First Aid and Emergency Response
+            We had no one trained in first aid in our community. When accidents happened, we didn't know what to do. Step Forward KE trained 30 community members in first aid and emergency response. Now we can handle emergencies before professional help arrives. Step Forward KE didn't just train us – they gave us the skills to save lives and keep our community safe.
+
+            💬 Question: Do you know basic first aid? If not, would you like to learn? 🚑 #StepForwardKE #FirstAidTraining #EmergencyResponse #KenyaHealth #NairobiSafety #LifeSavingSkills #CommunityHealth #PrepareToHelp #SafeCommunities #EmergencyPreparedness`,
+
+            `35. Sustainable Agriculture
+            Our farming practices were depleting the soil, and yields were declining. Step Forward KE introduced us to sustainable agriculture – composting, crop rotation, and organic farming. Now our soil is healthier, our yields have increased, and we're producing food without harming the environment. Step Forward KE didn't just teach us farming techniques – they showed us how to farm for the future and protect our land.
+
+            💬 Question: What sustainable farming practice have you tried? Share your experience! 🌱 #StepForwardKE #SustainableAgriculture #OrganicFarming #KenyaFarming #NairobiAgri #SoilHealth #FoodProduction #FutureFarming #EcoFriendly #FarmersForChange`,
+
+            `36. Community Healthcare
+            Our community had no access to basic healthcare. The nearest clinic was 10 kilometers away. Step Forward KE set up a community health post, trained community health workers, and provided essential medicines. Now we have access to quality healthcare close to home. Step Forward KE didn't just build a clinic – they brought health and hope to our doorstep.
+
+            💬 Question: What's one health service your community needs most? 🏥 #StepForwardKE #CommunityHealthcare #HealthPost #KenyaHealth #NairobiHealthcare #AccessToHealth #CommunityHealthWorkers #Wellness #HealthyCommunities #HealthForAll`,
+
+            `37. Skills for Employment
+            I had a degree but no practical skills, and I couldn't find a job. Step Forward KE offered career guidance, internships, and job placement support. Today, I'm employed in my field, and I'm building my career. Step Forward KE didn't just help me find a job – they gave me the skills and confidence to succeed.
+
+            💬 Question: What's the most valuable skill you've learned for your career? 💼 #StepForwardKE #SkillsForEmployment #CareerGuidance #KenyaJobs #NairobiEmployment #YouthEmployment #Internships #JobPlacement #CareerSuccess #WorkReady`,
+
+            `38. Community Markets
+            Our farmers and artisans had no place to sell their goods. We were forced to sell to middlemen at low prices. Step Forward KE helped us establish a community market where we sell directly to consumers. Now we get better prices, and our products are reaching a wider audience. Step Forward KE didn't just build a market – they empowered our local economy and helped us thrive.
+
+            💬 Question: What do you love most about community markets? Share below! 🛒 #StepForwardKE #CommunityMarkets #BuyLocal #KenyaTrade #NairobiMarkets #Artisans #FarmersMarket #EconomicEmpowerment #SupportLocal #ThrivingCommunities`,
+
+            `39. Waste to Wealth
+            We saw waste as a problem. Step Forward KE taught us how to turn waste into wealth – recycling plastics, making compost, and creating sustainable products. Now we've started a small recycling business that creates jobs and cleans our environment. Step Forward KE didn't just solve a waste problem – they created economic opportunities and protected our environment.
+
+            💬 Question: What creative ways do you recycle or reuse items? Share below! ♻️ #StepForwardKE #WasteToWealth #Recycling #KenyaEnvironment #NairobiRecycling #CircularEconomy #GreenBusiness #SustainableLiving #EcoEntrepreneurship #ZeroWaste`,
+
+            `40. Leadership and Governance
+            Women were often excluded from leadership roles in our community. Step Forward KE conducted leadership training for women and encouraged them to run for community positions. Today, we have women leading our community committees, and our voices are finally heard. Step Forward KE didn't just train us – they empowered us to take our rightful place as leaders and change-makers.
+
+            💬 Question: Tag a female leader who inspires you and tell us why! 👩‍💼 #StepForwardKE #WomenLeadership #Governance #KenyaWomen #NairobiLeaders #BreakTheGlassCeiling #WomenInPower #CommunityLeaders #Empowerment #ChangeMakers`,
+
+            `41. Irrigation and Water Access
+            Our farms were failing due to lack of water. Step Forward KE helped us install drip irrigation systems and access affordable water pumps. Now we can farm year-round, even during dry seasons. Our harvests have improved, and our families are food secure. Step Forward KE didn't just give us water – they gave us the means to farm through the seasons and build resilience.
+
+            💬 Question: What's the biggest challenge for farmers in your area? 💧 #StepForwardKE #Irrigation #WaterAccess #KenyaFarming #NairobiAgriculture #YearRoundFarming #FoodSecurity #WaterPumps #SustainableFarming #ResilientCommunities`,
+
+            `42. After-School Programs
+            Our children had no supervision after school, leading to behavioral issues and poor performance. Step Forward KE started after-school programs with tutoring, sports, and life skills. Our children are now doing better in school, staying out of trouble, and developing valuable skills. Step Forward KE didn't just keep our children safe – they invested in their education and holistic development.
+
+            💬 Question: What after-school activity did you enjoy most as a child? 🏀 #StepForwardKE #AfterSchoolPrograms #ChildDevelopment #KenyaChildren #NairobiYouth #Mentorship #LifeSkills #AcademicSupport #SafeSpaces #BrightFutures`,
+
+            `43. Food Processing and Storage
+            Our farmers were losing up to 40% of their produce due to lack of processing and storage facilities. Step Forward KE provided solar dryers and storage facilities, reducing post-harvest losses. Now we can process and store our produce, selling throughout the year. Step Forward KE didn't just reduce losses – they increased our income and reduced food waste.
+
+            💬 Question: How can we reduce food waste in Kenya? Share your thoughts! 🥔 #StepForwardKE #FoodProcessing #PostHarvestLoss #KenyaFarmers #NairobiStorage #SolarDryers #FoodPreservation #ReduceWaste #IncreaseIncome #FoodSecurity`,
+
+            `44. Sanitary Products for Girls
+            Many girls in our community were missing school during their menstruation because they couldn't afford sanitary products. Step Forward KE started a program providing free sanitary pads and menstrual hygiene education. Now our girls attend school regularly and with dignity. Step Forward KE didn't just provide products – they ensured girls' education continues un-interrupted.
+
+            💬 Question: How can we support girls' education in Kenya? Share your ideas! 🩸 #StepForwardKE #SanitaryProducts #MenstrualHygiene #KenyaGirls #NairobiEducation #DignityForGirls #KeepGirlsInSchool #WomenHealth #GenderEquality #EmpowerGirls`,
+
+            `45. Cooperative Formation
+            We worked individually and struggled to get good prices for our products. Step Forward KE helped us form a cooperative, trained us on management, and connected us with markets. Now we negotiate better prices, share resources, and support each other. Step Forward KE didn't just form a cooperative – they unified our community and increased our economic power.
+
+            💬 Question: Have you ever been part of a cooperative? Share your experience! 🤝 #StepForwardKE #Cooperative #CommunityUnity #KenyaCooperatives #NairobiTrade #EconomicPower #SupportEachOther #BetterPrices #Solidarity #StrongerTogether`,
+
+            `46. Road Safety and Traffic Management
+            Our roads were dangerous, and we saw many accidents. Step Forward KE conducted road safety campaigns, trained community members on traffic rules, and worked with authorities on road improvements. Now our roads are safer, and accidents have decreased. Step Forward KE didn't just educate us – they saved lives and made our streets safer for everyone.
+
+            💬 Poll: Have you been in a road accident? Share your story to raise awareness! 🚦 #StepForwardKE #RoadSafety #SafeRoads #KenyaTraffic #NairobiRoads #AccidentPrevention #SafeTravel #CommunitySafety #RoadAwareness #SaveLives`,
+
+            `47. Beekeeping and Honey Production
+            We were looking for alternative livelihoods. Step Forward KE introduced us to beekeeping, provided training and equipment. Now we produce high-quality honey that sells well in local markets. Step Forward KE didn't just introduce a new skill – they gave us a sustainable livelihood and a way to diversify our income.
+
+            💬 Question: What alternative livelihood would you like to try? 🐝 #StepForwardKE #Beekeeping #HoneyProduction #KenyaLivelihood #NairobiBeekeeping #SustainableIncome #AlternativeLivelihoods #Biodiversity #Pollinators #SweetSuccess`,
+
+            `48. Music and Arts Programs
+            Our youth were talented but had no platform to showcase their abilities. Step Forward KE started music and arts programs, providing instruments, training, and performance opportunities. Our youth are now expressing themselves creatively and gaining recognition. Step Forward KE didn't just give them instruments – they unleashed their creativity and built confidence.
+
+            💬 Question: Share a song or performance that inspires you! 🎵 #StepForwardKE #MusicAndArts #KenyaArtists #NairobiCreatives #YouthExpression #CreativeTalent #ArtsForChange #CreativeCommunity #InspireYouth #TalentUnleashed`,
+
+            `49. Apiculture and Honey Value Addition
+            We were producing raw honey but not getting good prices. Step Forward KE taught us value addition – packaging, labeling, and branding. Now we sell branded honey at premium prices. Step Forward KE didn't just teach us production – they taught us business, enabling us to maximize our profits.
+
+            💬 Question: What's your favorite Kenyan product you wish was more widely available? 🍯 #StepForwardKE #HoneyValueAddition #Agribusiness #KenyaHoney #NairobiValueAddition #PremiumProducts #Entrepreneurship #Agripreneur #SmallBusiness #MaximizeProfits`,
+
+            `50. Community News and Information
+            We had no access to reliable information. Rumors spread quickly, and we didn't know what was true. Step Forward KE established a community newsletter and WhatsApp group with verified news and updates. Now we stay informed and make better decisions. Step Forward KE didn't just share information – they created a more informed and connected community.
+
+            💬 Question: How do you stay informed about what's happening in your community? 📰 #StepForwardKE #CommunityInformation #VerifiedNews #KenyaCommunities #NairobiNews #StayInformed #ConnectedCommunity #TruthMatters #CommunityNews #KnowledgeIsPower`
         ];
 
-        // ─── Build posts array with random stats ────────────────
-        const posts = [];
-
-        // Add Solution Center posts
-        solutionPosts.forEach((text, index) => {
-            const likes = 220 + Math.floor(Math.random() * 380);
-            const comments = 220 + Math.floor(Math.random() * 280);
-            const shares = 220 + Math.floor(Math.random() * 230);
-            const reach = 400 + Math.floor(Math.random() * 600);
-            posts.push({
-                brand: 'Solution Center KE',
-                title: text,
-                likes: likes,
-                comments: comments,
-                shares: shares,
-                reach: reach
-            });
-        });
-
-        // Add Step Forward posts
-        stepPosts.forEach((text, index) => {
-            const likes = 230 + Math.floor(Math.random() * 420);
-            const comments = 220 + Math.floor(Math.random() * 300);
-            const shares = 220 + Math.floor(Math.random() * 250);
-            const reach = 500 + Math.floor(Math.random() * 800);
-            posts.push({
-                brand: 'Step Forward KE',
-                title: text,
-                likes: likes,
-                comments: comments,
-                shares: shares,
-                reach: reach
-            });
-        });
-
-        // ─── Render posts ──────────────────────────────────────
-        let postsHTML = '';
-        posts.forEach(post => {
-            const totalEngagement = post.likes + post.comments + post.shares;
-            postsHTML += `
-                <div class="post-card">
-                    <div class="post-title">${post.title}</div>
-                    <div class="post-meta">${post.brand}</div>
-                    <div class="post-stats">
-                        <span><i class="fas fa-heart"></i> <span class="stat-value">${post.likes}</span></span>
-                        <span><i class="fas fa-comment"></i> <span class="stat-value">${post.comments}</span></span>
-                        <span><i class="fas fa-share-alt"></i> <span class="stat-value">${post.shares}</span></span>
-                        <span><i class="fas fa-eye"></i> <span class="stat-value">${post.reach > 1000 ? (post.reach/1000).toFixed(1)+'K' : post.reach}</span></span>
+        // ─── Render posts for a given container ──────────────────
+        function renderPosts(postsArray, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            postsArray.forEach(post => {
+                // Generate random stats above 220
+                const likes = 220 + Math.floor(Math.random() * 380);
+                const comments = 220 + Math.floor(Math.random() * 280);
+                const shares = 220 + Math.floor(Math.random() * 230);
+                const totalEngagement = likes + comments + shares;
+                html += `
+                    <div class="post-card">
+                        <div class="post-title">${post}</div>
+                        <div class="post-stats">
+                            <span><i class="fas fa-heart"></i> <span class="stat-value">${likes}</span> likes</span>
+                            <span><i class="fas fa-comment"></i> <span class="stat-value">${comments}</span> comments</span>
+                            <span><i class="fas fa-share-alt"></i> <span class="stat-value">${shares}</span> shares</span>
+                        </div>
+                        <div class="post-engagement">Total Engagement: ${totalEngagement > 1000 ? (totalEngagement/1000).toFixed(1)+'K' : totalEngagement}</div>
                     </div>
-                    <div class="post-engagement">Total Engagement: ${totalEngagement > 1000 ? (totalEngagement/1000).toFixed(1)+'K' : totalEngagement}</div>
-                </div>
-            `;
-        });
-        document.getElementById('postsGrid').innerHTML = postsHTML;
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        renderPosts(solutionPosts, 'solutionPostsGrid');
+        renderPosts(stepPosts, 'stepPostsGrid');
 
         // ─── Charts ─────────────────────────────────────────────
         function getColDates() {
@@ -681,20 +1062,13 @@
             }
         });
 
-        // ─── Realtime Clock ─────────────────────────────────────
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('realtimeClock').textContent = timeString;
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
+        // ─── Date ──────────────────────────────────────────────
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
 
         // ─── Export ─────────────────────────────────────────────
         function exportCharts() {
@@ -719,7 +1093,7 @@
             applyDark(dark); });
         applyDark(dark);
 
-        console.log('✅ Dashboard loaded with exact 100 client posts, realtime clock, 14.6% engagement, KES 12,708 ad spend');
+        console.log('✅ Dashboard loaded – 100 exact posts, 14.6% engagement, KES 12,708 ad spend');
     </script>
 </body>
 </html>
