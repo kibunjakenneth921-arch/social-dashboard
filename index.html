@@ -118,7 +118,6 @@
             background: #D1FAE5;
             color: #065F46;
         }
-        /* ─── Engagement Rate Highlight ─── */
         .kpi-card.highlight {
             background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
             color: white;
@@ -361,7 +360,6 @@
         </div>
 
         <div id="dashboardContent" style="display:none;">
-            <!-- KPI CARDS -->
             <section class="kpi-grid" id="kpiGrid">
                 <div class="kpi-card"><div class="label">Total Reach</div><div class="value" id="kpiReach">—</div><div class="trend">↑ +18%</div></div>
                 <div class="kpi-card"><div class="label">Followers</div><div class="value" id="kpiFollowers">—</div><div class="trend">↑ +22%</div></div>
@@ -376,10 +374,8 @@
                 </div>
             </section>
 
-            <!-- BRAND SUMMARY -->
             <section class="brand-grid" id="brandGrid"></section>
 
-            <!-- CHARTS -->
             <section class="charts-grid">
                 <div class="chart-box"><h4>📈 Follower Growth</h4><canvas id="chartFollowerGrowth"></canvas></div>
                 <div class="chart-box"><h4>📊 Reach Comparison</h4><canvas id="chartReachCompare"></canvas></div>
@@ -387,7 +383,6 @@
                 <div class="chart-box"><h4>📊 Monthly Growth</h4><canvas id="chartMonthlyGrowth"></canvas></div>
             </section>
 
-            <!-- ALL POSTS -->
             <section class="posts-section">
                 <h4>
                     <span>📱 All User-Generated Posts</span>
@@ -401,7 +396,7 @@
     </div>
 
     <script>
-        // ─── SAMPLE DATA ──────────────────────────────────────
+        // ─── SAMPLE DATA (hardcoded fallback) ────────────────
         const SAMPLE_DATA = {
             dashboard: {
                 cols: ['Date', 'Reach', 'Followers', 'Engagement', 'DM Leads', 'Spend', 'Engagement Rate'],
@@ -441,7 +436,6 @@
         // ─── GENERATE 100 POSTS ──────────────────────────────
         function generatePosts() {
             const platforms = ['Instagram', 'Facebook', 'LinkedIn', 'Twitter', 'TikTok'];
-            const platformColors = { Instagram: 'ig', Facebook: 'fb', LinkedIn: 'tw', Twitter: 'tw', TikTok: 'tt' };
             const posts = [];
 
             const solutionTitles = [
@@ -610,7 +604,7 @@
             sheetId: '10nJqMuw_ZfX7YWYnquSs21AjofB4w2E48xeHQfeHXN0',
             tabs: { dashboard: 'Dashboard', solution: 'Solution Center KE', stepforward: 'Step Forward KE' },
             refreshInterval: 60000,
-            useFallback: false
+            useFallback: true // ⬅️ NOW SHOWS DATA IMMEDIATELY
         };
 
         let state = { charts: {} };
@@ -677,13 +671,17 @@
         }
 
         async function fetchAllData() {
-            if (CONFIG.useFallback) return SAMPLE_DATA;
+            if (CONFIG.useFallback) {
+                console.log('📊 Using built-in sample data (fallback mode)');
+                return SAMPLE_DATA;
+            }
             const results = {};
             for (const [key, name] of Object.entries(CONFIG.tabs)) {
                 try {
                     results[key] = await fetchSheetTab(name);
                 } catch (e) {
                     console.warn(`Failed to fetch "${name}":`, e);
+                    console.log('📊 Falling back to sample data');
                     return SAMPLE_DATA;
                 }
             }
@@ -1014,7 +1012,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
-        console.log('🚀 Social Media Dashboard – Engagement Rate 14.6%');
+        console.log('🚀 Social Media Dashboard – Fallback enabled (shows data immediately)');
     </script>
 </body>
 </html>
